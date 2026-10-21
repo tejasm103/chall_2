@@ -13,7 +13,11 @@ const MindVerseAPI = (() => {
     if (stored) {
       return stored.replace(/\/+$/, '');
     }
-    // Default local Flask backend
+    // If running directly on the unified live server (port 5000)
+    if (window.location.port === '5000') {
+      return '/api';
+    }
+    // Default local Flask backend when running separate frontend server
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       return 'http://127.0.0.1:5000/api';
     }

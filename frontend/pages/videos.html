@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accessible Video Library — MindVerse</title>
-  <meta name="description" content="Calm educational videos with WebVTT captions, spoken voice narration, interactive sync transcripts, playback speed controls, and sensory visual filters.">
+  <meta name="description" content="Calm educational videos with WebVTT captions, spoken voice explanation, interactive sync transcripts, playback speed controls, and sensory visual filters.">
   <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
   
   <link rel="stylesheet" href="../css/main.css">
@@ -42,7 +42,7 @@
   <main id="mainContent" class="main-content" role="main">
     <div class="page-header">
       <h1 class="page-title">Accessible Video Library</h1>
-      <p class="page-subtitle">Educational demonstrations with spoken voice narration, interactive transcripts, closed captions, and sensory contrast filters.</p>
+      <p class="page-subtitle">Educational visual demonstrations with continuous voice explanations, interactive transcripts, and sensory contrast filters.</p>
     </div>
 
     <!-- Video Library Grid -->
@@ -55,8 +55,11 @@
   <div id="videoPlayerModal" class="video-player-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalVideoTitle">
     <div class="video-modal-content">
       <!-- Top Bar -->
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border-light);">
-        <h2 id="modalVideoTitle" style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Video Title</h2>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border-light); background: var(--bg-surface);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h2 id="modalVideoTitle" style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">Video Title</h2>
+          <span class="badge badge-gentle">Voice Guided</span>
+        </div>
         <button id="closeVideoModalBtn" class="btn btn-outline" style="min-height: 36px; padding: 4px 12px; font-weight: 700;" aria-label="Close video player">
           ✕ Close
         </button>
@@ -65,30 +68,37 @@
       <!-- Video Display Container -->
       <div id="modalVideoContainer" class="video-screen-wrapper video-container filter-normal">
         <canvas id="demoVideoCanvas" width="800" height="450" style="width: 100%; height: 100%;"></canvas>
+        
+        <!-- Live Caption Subtitles -->
         <div id="modalVttCaptionBox" class="vtt-caption-box active" aria-live="polite">
-          Captions loading...
+          Loading explanation voice...
         </div>
+
+        <!-- Direct Instant Voice Replay Button Overlay -->
+        <button id="quickHearExplanationBtn" class="btn btn-primary" style="position: absolute; top: 16px; right: 16px; padding: 8px 16px; font-size: 0.9rem; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" title="Hear the current explanation voice">
+          🔊 Hear Voice Explanation
+        </button>
       </div>
 
       <!-- Accessible Video Controls Bar -->
       <div class="video-controls-bar">
-        <div class="video-controls-left">
+        <div class="video-controls-left" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <button id="modalPlayPauseBtn" class="v-ctrl-btn" aria-label="Play or Pause Video">▶ Play</button>
           <button id="modalRestartBtn" class="v-ctrl-btn" aria-label="Restart Video from Beginning">🔄 Restart</button>
           <button id="modalVoiceToggleBtn" class="v-ctrl-btn active" aria-label="Toggle Voice Narration">🔊 Voice: ON</button>
           <span id="videoVoiceIndicator" class="voice-wave-indicator" title="Voice Speaking" aria-hidden="true">
             <span></span><span></span><span></span>
           </span>
-          <span id="videoCurrentTimeDisplay" style="font-weight: 700; font-size: 0.9rem; margin-left: 8px;">0:00 / 2:15</span>
+          <span id="videoCurrentTimeDisplay" style="font-weight: 700; font-size: 0.9rem; margin-left: 6px;">0:00 / 1:35</span>
         </div>
 
-        <div class="video-controls-right">
+        <div class="video-controls-right" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <!-- Playback Speed -->
           <div style="display: flex; align-items: center; gap: 4px;">
             <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Speed:</span>
-            <button class="v-ctrl-btn speed-btn" data-speed="0.5">0.5x</button>
             <button class="v-ctrl-btn speed-btn" data-speed="0.75">0.75x</button>
             <button class="v-ctrl-btn speed-btn active" data-speed="1.0">1.0x</button>
+            <button class="v-ctrl-btn speed-btn" data-speed="1.25">1.25x</button>
           </div>
 
           <!-- Contrast Filter -->
@@ -101,11 +111,11 @@
         </div>
       </div>
 
-      <!-- Interactive Transcript Box -->
+      <!-- Interactive Synchronized Transcript Box -->
       <div class="interactive-transcript-container" aria-label="Synchronized Transcript">
         <div class="transcript-header" style="display: flex; align-items: center; justify-content: space-between;">
-          <span>Interactive Transcript (Click any line to seek and hear voice)</span>
-          <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary);">🔊 Voice Synchronized</span>
+          <span>Step-by-Step Voice Guide (Click any line to jump and hear explanation)</span>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary);">🔊 Synchronized Speech</span>
         </div>
         <div id="transcriptLinesContainer">
           <!-- Injected lines -->
@@ -116,7 +126,7 @@
 
   <footer class="app-footer" role="contentinfo">
     <div class="footer-inner">
-      <div>MindVerse Video Library &copy; 2026. Local visual demonstrations with synchronized transcripts and voice narration.</div>
+      <div>MindVerse Video Library &copy; 2026. Local visual demonstrations with synchronized transcripts and spoken voice explanations.</div>
       <a href="dashboard.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🌟 Return to Dashboard</a>
     </div>
   </footer>
@@ -131,108 +141,166 @@
   <script src="../js/main.js"></script>
 
   <script>
+    // Comprehensive, continuous step-by-step explanations for each educational demonstration
     const SAMPLE_TRANSCRIPTS = {
       1: [
-        { time: 0, text: "Welcome to Calming Deep Breaths with Milo." },
-        { time: 15, text: "Let's sit comfortably and soften our shoulders." },
-        { time: 35, text: "Breathe in gently as the circle grows large: 1, 2, 3..." },
-        { time: 60, text: "Now hold softly, feeling calm and peaceful." },
-        { time: 80, text: "Gently exhale and let all tension drift away." },
-        { time: 105, text: "You did wonderful. Your mind is ready to learn!" }
+        { time: 0, text: "Welcome to Calming Deep Breaths with Milo! Find a cozy, quiet spot to sit." },
+        { time: 8, text: "Drop your shoulders, relax your jaw, and let your hands rest gently on your lap." },
+        { time: 18, text: "Watch the soft glowing circle on the screen. It is getting ready to breathe with you." },
+        { time: 28, text: "Breathe in slowly through your nose as the circle grows large: one, two, three, four." },
+        { time: 40, text: "Now hold your breath softly at the top, feeling calm, peaceful, and completely still." },
+        { time: 50, text: "Gently breathe out through your mouth as the circle shrinks, letting all tension float away." },
+        { time: 64, text: "Let's do that once more. Gentle breath in, filling your chest with fresh, calm energy." },
+        { time: 76, text: "Softly hold, and exhale smoothly. You did a wonderful job!" },
+        { time: 88, text: "You are centered, relaxed, and your mind is ready for your learning adventure today." }
       ],
       2: [
-        { time: 0, text: "The Phonics Melody Song: Letters A to Z." },
-        { time: 20, text: "A says ah as in apple. B says buh as in ball." },
-        { time: 45, text: "C says kuh as in cat. D says duh as in duck." },
-        { time: 70, text: "Sing along with clear sounds and happy smiles!" }
+        { time: 0, text: "Welcome to the Phonics Melody! Today we discover the musical sounds of our letters." },
+        { time: 8, text: "Letter A! A says ah, as in apple. Ah, ah, apple! Feel your mouth open wide." },
+        { time: 20, text: "Letter B! B says buh, as in bouncy blue ball. Bring your lips together: buh, buh, ball!" },
+        { time: 32, text: "Letter C! C says kuh, as in playful cat. Tap the back of your tongue: kuh, kuh, cat!" },
+        { time: 44, text: "Letter D! D says duh, as in happy dancing duck. Tap your teeth: duh, duh, duck!" },
+        { time: 56, text: "Letter E! E says eh, as in energetic elephant. Give a gentle smile: eh, eh, elephant!" },
+        { time: 68, text: "Letter F! F says fff, as in friendly flying fish. Blow soft air across your teeth: fff, fish!" },
+        { time: 80, text: "Letter G! G says guh, as in glowing garden. Super phonics singing! You know your letter sounds!" }
       ],
       3: [
-        { time: 0, text: "Counting Playful Stars 1 to 10." },
-        { time: 20, text: "Here comes star number one, glowing bright yellow!" },
-        { time: 45, text: "Two, three, four... more stars join the dance!" },
-        { time: 70, text: "Five bright stars shining in the quiet sky." }
+        { time: 0, text: "Let's count playful glowing stars together in our beautiful night sky!" },
+        { time: 8, text: "Look up! Here comes Star number One, shining bright, warm, and yellow!" },
+        { time: 18, text: "Star number Two twinkles right beside it! One, two stars glowing in the quiet sky." },
+        { time: 28, text: "Three and Four join the constellation! Let's count them together: one, two, three, four!" },
+        { time: 38, text: "Star number Five shines right in the middle! That makes five brilliant stars, half a full set!" },
+        { time: 50, text: "Six and Seven float down softly like gentle glowing nightlights." },
+        { time: 62, text: "Eight and Nine join the celestial dance! We are almost all the way to ten!" },
+        { time: 74, text: "And here is Star number Ten! What a magnificent glowing star cluster!" },
+        { time: 85, text: "Ten happy stars! You counted all the way from one to ten like a star detective!" }
       ],
       4: [
-        { time: 0, text: "Recognizing Feelings and Facial Expressions with Friends." },
-        { time: 25, text: "Notice a happy smile with upturned corners." },
-        { time: 50, text: "A calm face is resting and peaceful." },
-        { time: 75, text: "Every person shows their feelings in their own special way." }
+        { time: 0, text: "Let's explore feelings and facial expressions with Milo and friends." },
+        { time: 8, text: "Look at this face: sparkling eyes and upturned smiling cheeks. This is Happy!" },
+        { time: 20, text: "When we feel happy, our chest feels light and warm, and we want to share our smile." },
+        { time: 32, text: "Now notice this calm expression. The eyes are resting and the mouth is peaceful. This is Calm." },
+        { time: 44, text: "Feeling calm is wonderful for focusing on a fun lesson, reading, or drawing." },
+        { time: 56, text: "Look at those round, wide-open eyes and raised eyebrows! This face is Surprised!" },
+        { time: 68, text: "We feel surprised when a friend shares a cool new toy or a secret discovery." },
+        { time: 80, text: "Every feeling is natural and okay. Recognizing expressions helps us be kind, empathetic friends!" }
       ],
       5: [
-        { time: 0, text: "The Step-by-Step Handwashing Song." },
-        { time: 15, text: "Step 1: Turn on clean warm water and wet hands." },
-        { time: 35, text: "Step 2: Add bubbly soap and scrub for 20 seconds!" },
-        { time: 65, text: "Step 3: Rinse all the bubbles away under clean water." },
-        { time: 90, text: "Step 4: Dry with a clean towel. Fresh and clean!" }
+        { time: 0, text: "It's time for the Step-by-Step Handwashing Song! Keeping our hands clean and fresh." },
+        { time: 8, text: "Step One: Turn on the faucet and wet your hands with clean warm water." },
+        { time: 18, text: "Step Two: Pump bubbly soap! One squeeze is just the right amount." },
+        { time: 28, text: "Rub palm to palm! See the fluffy white soap bubbles appear!" },
+        { time: 38, text: "Scrub between your fingers and the backs of both hands for twenty whole seconds!" },
+        { time: 50, text: "Singing the ABC song or humming keeps the bubbles scrubbing long enough." },
+        { time: 62, text: "Step Three: Rinse thoroughly under warm running water until all soap bubbles glide away." },
+        { time: 74, text: "Step Four: Dry your hands with a soft, clean towel." },
+        { time: 84, text: "Sparkly clean hands! You washed away all the germs like a champion!" }
       ]
     };
 
     let activeVideo = null;
     let isPlaying = false;
     let currentTime = 0;
+    const TOTAL_DURATION = 95; // 1:35 in seconds
     let playbackSpeed = 1.0;
     let tickerId = null;
 
-    // Voice Narration Engine
+    // Voice Narration State
     let voiceNarrationEnabled = true;
     let lastSpokenIndex = -1;
-    let cachedVoices = [];
+    let availableVoices = [];
 
     document.addEventListener('DOMContentLoaded', async () => {
-      initSpeechVoices();
+      initSpeechEngine();
       await loadVideos();
       bindPlayerControls();
     });
 
-    function initSpeechVoices() {
+    function initSpeechEngine() {
       if ('speechSynthesis' in window) {
-        cachedVoices = window.speechSynthesis.getVoices();
+        availableVoices = window.speechSynthesis.getVoices();
         window.speechSynthesis.onvoiceschanged = () => {
-          cachedVoices = window.speechSynthesis.getVoices();
+          availableVoices = window.speechSynthesis.getVoices();
         };
       }
     }
 
+    /**
+     * Unlocks speech synthesis and Web Audio synchronously on user gesture.
+     */
+    function unlockAudioAndSpeech() {
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.resume();
+          // Prime speech engine
+          const primer = new SpeechSynthesisUtterance(' ');
+          primer.volume = 0.01;
+          window.speechSynthesis.speak(primer);
+        } catch (e) {}
+      }
+      if (window.SoundEngine) {
+        window.SoundEngine.init();
+      }
+    }
+
+    /**
+     * Speak explanation voice clearly using browser speech synthesis.
+     */
     function speakNarration(text) {
       if (!voiceNarrationEnabled) return;
       if (!('speechSynthesis' in window)) {
-        console.warn('[VideoVoice] Web Speech API not supported in browser.');
+        console.warn('[VideoVoice] Web Speech API unavailable.');
         return;
       }
 
       try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
         window.speechSynthesis.cancel();
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 0.88 * playbackSpeed;
-        utterance.pitch = 1.05;
+        utterance.pitch = 1.04;
+        utterance.volume = 1.0;
 
-        const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
-        if (voices && voices.length > 0) {
-          const preferredVoice = voices.find(v => v.lang.startsWith('en') && (
+        if (!availableVoices.length) {
+          availableVoices = window.speechSynthesis.getVoices();
+        }
+
+        if (availableVoices.length > 0) {
+          // Select friendly English voice
+          const preferred = availableVoices.find(v => v.lang.startsWith('en') && (
             v.name.includes('Natural') ||
             v.name.includes('Google') ||
+            v.name.includes('David') ||
+            v.name.includes('Zira') ||
             v.name.includes('Samantha') ||
             v.name.includes('Jenny') ||
-            v.name.includes('Zira') ||
-            v.name.includes('David') ||
-            v.name.includes('Victoria')
-          )) || voices.find(v => v.lang.startsWith('en')) || voices[0];
-          if (preferredVoice) utterance.voice = preferredVoice;
+            v.name.includes('George')
+          )) || availableVoices.find(v => v.lang.startsWith('en')) || availableVoices[0];
+          if (preferred) utterance.voice = preferred;
         }
 
         utterance.onstart = () => {
           document.getElementById('videoVoiceIndicator')?.classList.add('speaking');
+          const quickBtn = document.getElementById('quickHearExplanationBtn');
+          if (quickBtn) quickBtn.classList.add('speaking');
           if (window.MiloCompanion) window.MiloCompanion.setState('speaking');
         };
 
         utterance.onend = () => {
           document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
+          const quickBtn = document.getElementById('quickHearExplanationBtn');
+          if (quickBtn) quickBtn.classList.remove('speaking');
           if (window.MiloCompanion) window.MiloCompanion.setState('idle');
         };
 
-        utterance.onerror = () => {
+        utterance.onerror = (e) => {
           document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
+          const quickBtn = document.getElementById('quickHearExplanationBtn');
+          if (quickBtn) quickBtn.classList.remove('speaking');
           if (window.MiloCompanion) window.MiloCompanion.setState('idle');
         };
 
@@ -254,7 +322,7 @@
 
       grid.innerHTML = videos.map(v => `
         <article class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
-          <div class="video-card-poster" onclick="openVideoPlayer(${v.id})" role="button" tabindex="0" aria-label="Play video: ${v.title}">
+          <div class="video-card-poster" onclick="handleStartVideo(${v.id})" role="button" tabindex="0" aria-label="Play video: ${v.title}">
             <img src="../assets/images/${v.poster_file}" alt="Poster for ${v.title}" />
             <div class="video-play-overlay-btn" aria-hidden="true">▶</div>
           </div>
@@ -262,53 +330,55 @@
             <div>
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                 <span class="badge badge-gentle">${v.subject}</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">⏱️ ${v.duration}</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">⏱️ 1:35</span>
               </div>
               <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">${v.title}</h2>
               <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">${v.description}</p>
             </div>
             <div style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between;">
-              <button class="btn btn-primary" onclick="openVideoPlayer(${v.id})" style="padding: 8px 16px; min-height: 40px; font-size: 0.9rem;">
-                ▶ Watch Video
+              <button class="btn btn-primary" onclick="handleStartVideo(${v.id})" style="padding: 8px 16px; min-height: 40px; font-size: 0.9rem;">
+                ▶ Watch & Listen
               </button>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">👁️ ${v.plays_count} plays</span>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">👁️ ${v.plays_count} views</span>
             </div>
           </div>
         </article>
       `).join('');
     }
 
-    async function openVideoPlayer(videoId) {
-      activeVideo = await window.MindVerseAPI.getVideoDetail(videoId);
-      if (!activeVideo) return;
+    /**
+     * Immediate synchronous click handler to unlock user gesture activation before async fetches
+     */
+    function handleStartVideo(videoId) {
+      unlockAudioAndSpeech();
+      openVideoPlayer(videoId);
+    }
 
-      // Track play in database
-      await window.MindVerseAPI.trackVideoPlay(videoId);
+    async function openVideoPlayer(videoId) {
+      // Find video metadata or fetch from API
+      activeVideo = await window.MindVerseAPI.getVideoDetail(videoId);
+      if (!activeVideo) {
+        activeVideo = { id: videoId, title: 'Educational Video Demonstration' };
+      }
+
+      // Track play in background without blocking
+      window.MindVerseAPI.trackVideoPlay(videoId).catch(() => {});
 
       document.getElementById('modalVideoTitle').textContent = activeVideo.title;
       const modal = document.getElementById('videoPlayerModal');
       modal.classList.remove('hidden');
 
       currentTime = 0;
-      lastSpokenIndex = -1;
+      lastSpokenIndex = 0;
       isPlaying = true;
       document.getElementById('modalPlayPauseBtn').textContent = '⏸ Pause';
-
-      // Unlock browser audio & speech context on user click
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.resume();
-      }
-      if (window.SoundEngine) {
-        window.SoundEngine.init();
-      }
 
       renderTranscript(videoId);
       startDemoAnimation();
 
-      // Immediately speak the introductory narration line
+      // Immediately speak opening explanation voice!
       const lines = SAMPLE_TRANSCRIPTS[videoId] || SAMPLE_TRANSCRIPTS[1];
       if (lines && lines.length > 0) {
-        lastSpokenIndex = 0;
         speakNarration(lines[0].text);
       }
     }
@@ -323,15 +393,16 @@
             <strong style="color: var(--color-primary); flex-shrink: 0;">[${formatTime(l.time)}]</strong>
             <span>${l.text}</span>
           </div>
-          <button class="line-hear-btn" data-time="${l.time}" data-index="${i}" title="Hear line aloud" aria-label="Hear aloud">
+          <button class="line-hear-btn" data-time="${l.time}" data-index="${i}" title="Hear explanation aloud" aria-label="Hear aloud">
             🔊 Listen
           </button>
         </div>
       `).join('');
 
-      // Click on transcript row to seek and speak
+      // Row click seeks and speaks
       container.querySelectorAll('.transcript-line').forEach(el => {
         el.addEventListener('click', () => {
+          unlockAudioAndSpeech();
           const t = parseInt(el.getAttribute('data-time'), 10);
           const idx = parseInt(el.getAttribute('data-index'), 10);
           currentTime = t;
@@ -341,10 +412,11 @@
         });
       });
 
-      // Dedicated Listen Button
+      // Individual Listen buttons
       container.querySelectorAll('.line-hear-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
+          unlockAudioAndSpeech();
           const t = parseInt(btn.getAttribute('data-time'), 10);
           const idx = parseInt(btn.getAttribute('data-index'), 10);
           currentTime = t;
@@ -356,6 +428,17 @@
     }
 
     function bindPlayerControls() {
+      // Instant hear explanation button on player overlay
+      document.getElementById('quickHearExplanationBtn')?.addEventListener('click', () => {
+        unlockAudioAndSpeech();
+        const lines = SAMPLE_TRANSCRIPTS[activeVideo ? activeVideo.id : 1] || SAMPLE_TRANSCRIPTS[1];
+        let currentIdx = 0;
+        for (let i = 0; i < lines.length; i++) {
+          if (currentTime >= lines[i].time) currentIdx = i;
+        }
+        speakNarration(lines[currentIdx].text);
+      });
+
       // Close modal
       document.getElementById('closeVideoModalBtn')?.addEventListener('click', () => {
         document.getElementById('videoPlayerModal').classList.add('hidden');
@@ -369,12 +452,11 @@
 
       // Play / Pause
       document.getElementById('modalPlayPauseBtn')?.addEventListener('click', () => {
+        unlockAudioAndSpeech();
         isPlaying = !isPlaying;
         document.getElementById('modalPlayPauseBtn').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
 
         if (isPlaying) {
-          if ('speechSynthesis' in window) window.speechSynthesis.resume();
-          // Speak current active line
           const lines = SAMPLE_TRANSCRIPTS[activeVideo ? activeVideo.id : 1] || SAMPLE_TRANSCRIPTS[1];
           let currentIdx = 0;
           for (let i = 0; i < lines.length; i++) {
@@ -389,6 +471,7 @@
 
       // Restart
       document.getElementById('modalRestartBtn')?.addEventListener('click', () => {
+        unlockAudioAndSpeech();
         currentTime = 0;
         lastSpokenIndex = 0;
         isPlaying = true;
@@ -403,6 +486,7 @@
 
       // Voice Narration Toggle
       document.getElementById('modalVoiceToggleBtn')?.addEventListener('click', () => {
+        unlockAudioAndSpeech();
         voiceNarrationEnabled = !voiceNarrationEnabled;
         const btn = document.getElementById('modalVoiceToggleBtn');
         if (voiceNarrationEnabled) {
@@ -454,16 +538,18 @@
         if (!isPlaying) return;
 
         currentTime += 1 * playbackSpeed;
-        const totalDuration = 135; // 2:15 in seconds
-        if (currentTime > totalDuration) {
-          currentTime = totalDuration;
+        if (currentTime > TOTAL_DURATION) {
+          currentTime = TOTAL_DURATION;
           isPlaying = false;
           document.getElementById('modalPlayPauseBtn').textContent = '▶ Play';
           if ('speechSynthesis' in window) window.speechSynthesis.cancel();
           document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
+          if (window.MiloCompanion) {
+            window.MiloCompanion.celebrate("Wonderful job watching the video! You learned so much!");
+          }
         }
 
-        document.getElementById('videoCurrentTimeDisplay').textContent = `${formatTime(currentTime)} / ${formatTime(totalDuration)}`;
+        document.getElementById('videoCurrentTimeDisplay').textContent = `${formatTime(currentTime)} / ${formatTime(TOTAL_DURATION)}`;
         updateCaptionsAndTranscript();
 
         // Render Canvas Animation
@@ -473,7 +559,7 @@
     }
 
     function renderVideoCanvas(ctx, canvas, videoId, time) {
-      // Background gradient
+      // Deep soothing background
       ctx.fillStyle = '#0B132B';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -493,7 +579,7 @@
         ctx.arc(400, 210, radius + 30, 0, Math.PI * 2);
         ctx.fill();
 
-        // Inner soft core
+        // Inner glowing core
         ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
         ctx.arc(400, 210, 18, 0, Math.PI * 2);
@@ -507,11 +593,11 @@
       } else if (videoId === 2) {
         // Phonics Melody: Bouncing glowing letters A-Z
         const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-        const currentLetter = letters[Math.floor((time % 14) / 2)] || 'A';
+        const currentLetter = letters[Math.floor((time % 16) / 2.3)] || 'A';
 
         ctx.fillStyle = '#3A86C8';
         ctx.beginPath();
-        ctx.roundRect ? ctx.roundRect(330, 120, 140, 160, 20) : ctx.rect(330, 120, 140, 160);
+        ctx.roundRect ? ctx.roundRect(330, 110, 140, 160, 20) : ctx.rect(330, 110, 140, 160);
         ctx.fill();
 
         ctx.strokeStyle = '#FFD166';
@@ -519,17 +605,17 @@
         ctx.stroke();
 
         ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 72px Segoe UI, sans-serif';
+        ctx.font = 'bold 76px Segoe UI, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(currentLetter, 400, 230);
+        ctx.fillText(currentLetter, 400, 225);
 
         ctx.fillStyle = '#FFD166';
         ctx.font = 'bold 22px Segoe UI, sans-serif';
-        ctx.fillText(`Letter ${currentLetter} Phonics Sound`, 400, 335);
+        ctx.fillText(`Letter ${currentLetter} Phonics Melody`, 400, 335);
 
       } else if (videoId === 3) {
         // Counting Playful Stars 1 to 10
-        const starCount = Math.min(10, Math.floor(time / 8) + 1);
+        const starCount = Math.min(10, Math.floor(time / 8.5) + 1);
         ctx.fillStyle = '#FFD166';
         ctx.font = 'bold 28px Segoe UI, sans-serif';
         ctx.textAlign = 'center';
@@ -537,8 +623,8 @@
 
         for (let i = 0; i < starCount; i++) {
           const angle = (i / 10) * Math.PI * 1.5 - Math.PI * 0.75;
-          const sx = 400 + Math.cos(angle) * 160;
-          const sy = 200 + Math.sin(angle) * 90;
+          const sx = 400 + Math.cos(angle) * 165;
+          const sy = 195 + Math.sin(angle) * 90;
           drawStar(ctx, sx, sy, 5, 20, 10, '#FFD166');
         }
 
@@ -549,21 +635,21 @@
 
         ctx.fillStyle = '#2A9D8F';
         ctx.beginPath();
-        ctx.arc(400, 200, 75, 0, Math.PI * 2);
+        ctx.arc(400, 195, 75, 0, Math.PI * 2);
         ctx.fill();
 
         // Eyes
         ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
-        ctx.arc(375, 185, 10, 0, Math.PI * 2);
-        ctx.arc(425, 185, 10, 0, Math.PI * 2);
+        ctx.arc(375, 180, 10, 0, Math.PI * 2);
+        ctx.arc(425, 180, 10, 0, Math.PI * 2);
         ctx.fill();
 
-        // Smile
+        // Mouth
         ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = 5;
         ctx.beginPath();
-        ctx.arc(400, 205, 35, 0.1 * Math.PI, 0.9 * Math.PI);
+        ctx.arc(400, 200, 35, 0.1 * Math.PI, 0.9 * Math.PI);
         ctx.stroke();
 
         ctx.fillStyle = '#E0F2FE';
@@ -636,7 +722,7 @@
         captionBox.textContent = currentLine.text;
       }
 
-      // Highlight current line in transcript
+      // Highlight active line in transcript
       document.querySelectorAll('.transcript-line').forEach((el, idx) => {
         if (idx === currentLineIndex) {
           el.classList.add('current');
@@ -646,7 +732,7 @@
         }
       });
 
-      // Speak narration when active line advances
+      // Continuous explanation voice as video progresses
       if (isPlaying && currentLineIndex !== lastSpokenIndex) {
         lastSpokenIndex = currentLineIndex;
         if (window.SoundEngine) {
