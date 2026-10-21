@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson Activity — MindVerse</title>
+  <meta name="description" content="Interactive structured lesson player with guided demonstrations, visual hints, step-by-step practice, and gentle feedback.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
+  
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/games.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+  <canvas id="bgCanvas"></canvas>
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility Toolbar"></aside>
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="../assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="../index.html" class="nav-link">🏠 Home</a>
+        <a href="dashboard.html" class="nav-link">🌟 Dashboard</a>
+        <a href="alphabet.html" class="nav-link">🔤 Alphabet</a>
+        <a href="lessons.html" class="nav-link active">📚 Lessons</a>
+        <a href="games.html" class="nav-link">🎮 Games</a>
+        <a href="videos.html" class="nav-link">🎬 Videos</a>
+        <a href="daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="caregiver.html" class="nav-link">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content" role="main">
+    <div style="margin-bottom: 24px;">
+      <a href="lessons.html" class="btn btn-outline" style="min-height: 40px; padding: 6px 14px; font-size: 0.9rem;">
+        ← Back to Lessons Catalog
+      </a>
+    </div>
+
+    <!-- Lesson Stage Card -->
+    <article class="card" id="lessonStageCard" style="max-width: 800px; margin: 0 auto; padding: 36px 28px;">
+      <!-- Header / Progress bar -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+        <span class="badge badge-gentle" id="lessonLevelBadge">Level 1</span>
+        <span id="lessonStepIndicator" style="font-weight: 800; color: var(--color-primary);">Step 1 of 3</span>
+      </div>
+
+      <h1 id="lessonMainTitle" style="font-size: 2rem; font-weight: 800; margin-bottom: 6px;">Loading Lesson...</h1>
+      <p id="lessonSubConcept" style="color: var(--text-muted); font-size: 1rem; margin-bottom: 24px;"></p>
+
+      <!-- Step Content Area -->
+      <div id="lessonStepBody">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Action Buttons / Hint Area -->
+      <div style="margin-top: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--border-light); padding-top: 20px;">
+        <button id="showHintBtn" class="btn btn-outline" style="min-height: 42px;">
+          💡 Need a Gentle Hint?
+        </button>
+        <button id="hearInstructionBtn" class="btn btn-outline" style="min-height: 42px;">
+          🔊 Hear Milo Instruction
+        </button>
+      </div>
+
+      <!-- Hint Box -->
+      <div id="lessonHintBox" style="display: none; background: #FEF9C3; border: 1.5px solid #FDE047; padding: 14px 18px; border-radius: var(--radius-md); margin-top: 16px; color: #854D0E; font-weight: 600;" role="status">
+        <span id="hintContentText"></span>
+      </div>
+
+      <!-- Feedback Area -->
+      <div id="lessonFeedbackBox" class="feedback-banner" role="status"></div>
+    </article>
+  </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>MindVerse Interactive Lesson Player &copy; 2026. Errorless learning, no time pressure.</div>
+      <a href="lessons.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">📚 Browse All Lessons</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/sound-engine.js"></script>
+  <script src="../js/three-fallback.js"></script>
+  <script src="../js/three-world.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let currentLesson = null;
+    let currentStepIndex = 0;
+    let hintsUsedCount = 0;
+    let attemptsCount = 0;
+    let studentId = 1;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      studentId = window.AccessibilityManager ? window.AccessibilityManager.getStudentId() : 1;
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug') || 'wonderful-colors';
+
+      currentLesson = await window.MindVerseAPI.getLessonDetail(slug);
+      if (!currentLesson) {
+        document.getElementById('lessonMainTitle').textContent = 'Lesson Not Found';
+        document.getElementById('lessonStepBody').innerHTML = '<p style="color: var(--text-muted);">Please return to the lessons catalog.</p>';
+        return;
+      }
+
+      document.getElementById('lessonMainTitle').textContent = currentLesson.title;
+      document.getElementById('lessonLevelBadge').textContent = `Level ${currentLesson.level} • ${currentLesson.difficulty}`;
+      document.getElementById('lessonSubConcept').textContent = `${currentLesson.subject} — ${currentLesson.concept || ''}`;
+
+      currentStepIndex = 0;
+      hintsUsedCount = 0;
+      attemptsCount = 0;
+
+      renderStep(currentStepIndex);
+
+      document.getElementById('showHintBtn')?.addEventListener('click', () => {
+        hintsUsedCount++;
+        const currentStep = currentLesson.steps[currentStepIndex];
+        const hintBox = document.getElementById('lessonHintBox');
+        const hintText = document.getElementById('hintContentText');
+        if (hintBox && hintText && currentStep) {
+          hintText.textContent = `💡 Hint: ${currentStep.hint || 'Take your time and look carefully at the picture clues.'}`;
+          hintBox.style.display = 'block';
+          if (window.MiloCompanion) window.MiloCompanion.speak(currentStep.hint);
+        }
+      });
+
+      document.getElementById('hearInstructionBtn')?.addEventListener('click', () => {
+        const currentStep = currentLesson.steps[currentStepIndex];
+        if (currentStep && window.MiloCompanion) {
+          window.MiloCompanion.speak(currentStep.milo_dialogue || currentStep.instruction);
+        }
+      });
+    });
+
+    function renderStep(idx) {
+      const step = currentLesson.steps[idx];
+      if (!step) {
+        finishLesson();
+        return;
+      }
+
+      document.getElementById('lessonStepIndicator').textContent = `Step ${idx + 1} of ${currentLesson.steps.length}`;
+      document.getElementById('lessonHintBox').style.display = 'none';
+      const feedback = document.getElementById('lessonFeedbackBox');
+      if (feedback) feedback.style.display = 'none';
+
+      const body = document.getElementById('lessonStepBody');
+
+      if (window.MiloCompanion) {
+        window.MiloCompanion.speak(step.milo_dialogue || step.instruction);
+      }
+
+      let optionsHtml = '';
+      if (step.options && step.options.length > 0) {
+        optionsHtml = `
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 24px;" role="group" aria-label="Answer options">
+            ${step.options.map((opt, oIdx) => `
+              <button class="btn btn-outline lesson-opt-btn" data-correct="${opt.is_correct ? 'true' : 'false'}" data-label="${opt.label}" style="padding: 16px; min-height: 64px; font-size: 1.1rem; justify-content: flex-start; text-align: left; background: var(--bg-card);" aria-label="Choice ${opt.label}">
+                <span style="font-weight: 800; color: var(--color-primary); margin-right: 8px;">${oIdx + 1}.</span>
+                <span style="font-weight: 700;">${opt.label}</span>
+              </button>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      body.innerHTML = `
+        <div style="background: var(--bg-surface); padding: 20px; border-radius: var(--radius-md); margin-bottom: 20px;">
+          <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main);">
+            ${step.instruction}
+          </h2>
+          <p style="font-size: 1.1rem; color: var(--color-primary); font-weight: 600;">
+            ${step.question || ''}
+          </p>
+        </div>
+        ${optionsHtml}
+      `;
+
+      body.querySelectorAll('.lesson-opt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          attemptsCount++;
+          const isCorrect = btn.getAttribute('data-correct') === 'true';
+          const label = btn.getAttribute('data-label');
+
+          if (isCorrect) {
+            btn.style.background = '#DEF7EC';
+            btn.style.borderColor = '#10B981';
+            if (window.SoundEngine) window.SoundEngine.playSuccess();
+            if (window.MiloCompanion) window.MiloCompanion.celebrate(`Terrific choice! ${label} is correct!`);
+
+            const fb = document.getElementById('lessonFeedbackBox');
+            if (fb) {
+              fb.className = 'feedback-banner success';
+              fb.textContent = `🌟 Great job! Moving to the next step...`;
+            }
+
+            setTimeout(() => {
+              currentStepIndex++;
+              renderStep(currentStepIndex);
+            }, 1800);
+          } else {
+            btn.style.background = '#FEF08A';
+            if (window.SoundEngine) window.SoundEngine.playGentleTryAgain();
+            if (window.MiloCompanion) window.MiloCompanion.encourage("That was a good try! Let's look again together.");
+
+            const fb = document.getElementById('lessonFeedbackBox');
+            if (fb) {
+              fb.className = 'feedback-banner try-again';
+              fb.textContent = `🌱 That's a good try. Take your time and select another option!`;
+            }
+          }
+        });
+      });
+    }
+
+    async function finishLesson() {
+      const body = document.getElementById('lessonStepBody');
+      const score = Math.max(60, 100 - (hintsUsedCount * 10));
+      const stars = hintsUsedCount === 0 ? 3 : (hintsUsedCount <= 2 ? 2 : 1);
+
+      // Save to SQLite through API
+      let savedMsg = '';
+      if (window.MindVerseAPI && currentLesson) {
+        const res = await window.MindVerseAPI.saveProgress({
+          student_id: studentId,
+          lesson_id: currentLesson.id,
+          status: 'completed',
+          score: score,
+          hints_used: hintsUsedCount,
+          attempts: attemptsCount,
+          stars: stars
+        });
+        if (res.success) {
+          savedMsg = '💾 Progress recorded to SQLite successfully!';
+        }
+      }
+
+      if (window.MiloCompanion) {
+        window.MiloCompanion.celebrate(`Congratulations! You completed ${currentLesson.title} and earned ${stars} stars!`);
+      }
+
+      document.getElementById('lessonMainTitle').textContent = 'Lesson Completed! 🎉';
+      document.getElementById('lessonStepIndicator').textContent = 'Finished';
+
+      body.innerHTML = `
+        <div style="text-align: center; padding: 24px 0;">
+          <div style="font-size: 3.5rem; color: #FFD166; margin-bottom: 12px;">
+            ${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}
+          </div>
+          <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 8px;">Wonderful Learning!</h2>
+          <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 16px;">
+            Score: <strong>${score}%</strong> | Hints Used: <strong>${hintsUsedCount}</strong> | Attempts: <strong>${attemptsCount}</strong>
+          </p>
+          <p style="color: var(--color-secondary); font-weight: 700; margin-bottom: 24px;">${savedMsg}</p>
+
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <a href="lessons.html" class="btn btn-primary">
+              📚 Browse More Lessons
+            </a>
+            <a href="dashboard.html" class="btn btn-secondary">
+              ⭐ Return to Dashboard
+            </a>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

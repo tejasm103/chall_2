@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Rays -->
+  <g stroke="#FFA000" stroke-width="4" stroke-linecap="round">
+    <line x1="50" y1="10" x2="50" y2="20" />
+    <line x1="50" y1="80" x2="50" y2="90" />
+    <line x1="10" y1="50" x2="20" y2="50" />
+    <line x1="80" y1="50" x2="90" y2="50" />
+    <line x1="22" y1="22" x2="30" y2="30" />
+    <line x1="70" y1="70" x2="78" y2="78" />
+    <line x1="22" y1="78" x2="30" y2="70" />
+    <line x1="70" y1="30" x2="78" y2="22" />
+  </g>
+  <!-- Sun Disk -->
+  <circle cx="50" cy="50" r="26" fill="#FFD54F" />
+  <!-- Smile -->
+  <circle cx="42" cy="46" r="3" fill="#E65100" />
+  <circle cx="58" cy="46" r="3" fill="#E65100" />
+  <path d="M 42 54 Q 50 62 58 54" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" fill="none" />
+</svg>

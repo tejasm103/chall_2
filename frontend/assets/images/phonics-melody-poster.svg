@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" width="400" height="225">
+  <rect width="400" height="225" fill="#3A86C8" />
+  <circle cx="200" cy="100" r="45" fill="#FFFFFF" opacity="0.2" />
+  <text x="170" y="115" font-family="sans-serif" font-size="42" font-weight="bold" fill="#FFD166">A B C</text>
+  <text x="200" y="185" font-family="sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">The Phonics Melody Song</text>
+  <polygon points="194,90 212,100 194,110" fill="#FFFFFF" />
+</svg>

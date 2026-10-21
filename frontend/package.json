@@ -1,0 +1,22 @@
+{
+  "name": "mindverse-frontend",
+  "version": "1.0.0",
+  "description": "MindVerse — Inclusive Learning Lab: Accessible, calm educational web frontend",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y serve -l 3000 .",
+    "dev": "npx -y serve -l 3000 ."
+  },
+  "keywords": [
+    "inclusive-education",
+    "accessibility",
+    "neurodiversity",
+    "autism",
+    "adhd",
+    "dyslexia",
+    "wcag",
+    "vanilla-js"
+  ],
+  "author": "MindVerse Team",
+  "license": "MIT"
+}

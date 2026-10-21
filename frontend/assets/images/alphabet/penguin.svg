@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Body -->
+  <ellipse cx="50" cy="55" rx="26" ry="34" fill="#263238" />
+  <!-- White Belly -->
+  <ellipse cx="50" cy="60" rx="18" ry="26" fill="#ECEFF1" />
+  <!-- Flippers -->
+  <ellipse cx="23" cy="58" rx="6" ry="18" fill="#37474F" transform="rotate(15 23 58)" />
+  <ellipse cx="77" cy="58" rx="6" ry="18" fill="#37474F" transform="rotate(-15 77 58)" />
+  <!-- Eyes -->
+  <circle cx="42" cy="38" r="3" fill="#212121" />
+  <circle cx="58" cy="38" r="3" fill="#212121" />
+  <!-- Beak -->
+  <polygon points="46,42 54,42 50,49" fill="#FF9800" />
+  <!-- Feet -->
+  <ellipse cx="40" cy="88" rx="8" ry="4" fill="#FFA726" />
+  <ellipse cx="60" cy="88" rx="8" ry="4" fill="#FFA726" />
+</svg>

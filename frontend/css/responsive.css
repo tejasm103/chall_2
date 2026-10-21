@@ -1,0 +1,181 @@
+/* MindVerse — Inclusive Learning Lab: Responsive Layout & Mobile Styles */
+
+/* Milo Character Companion Floating Dock */
+.milo-dock {
+  position: fixed;
+  bottom: 20px;
+  right: 24px;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.milo-bubble-wrap {
+  position: relative;
+  background: var(--bg-card);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  max-width: 320px;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 10px;
+  pointer-events: auto;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.milo-bubble-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  right: 48px;
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: var(--bg-card) transparent;
+  display: block;
+  width: 0;
+}
+
+.milo-dialogue-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.milo-bubble-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.milo-btn-small {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.milo-btn-small:hover {
+  background: var(--bg-surface-hover);
+}
+
+.milo-avatar-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+  padding: 0;
+  transition: transform 0.2s ease;
+}
+
+.milo-avatar-btn:hover {
+  transform: scale(1.05);
+}
+
+.milo-avatar-btn:focus-visible {
+  outline: 4px solid var(--border-focus);
+  border-radius: 50%;
+}
+
+.milo-avatar-btn img,
+.milo-avatar-btn svg {
+  width: 90px;
+  height: 112px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+/* Tablet & Mobile Breakpoints */
+@media (max-width: 992px) {
+  .header-inner {
+    padding: 10px 16px;
+  }
+  
+  .main-nav {
+    gap: 4px;
+  }
+
+  .nav-link {
+    padding: 8px 10px;
+    font-size: 0.88rem;
+  }
+
+  .main-content {
+    padding: 24px 16px;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .main-nav {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .toolbar-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .milo-dock {
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .milo-avatar-btn img,
+  .milo-avatar-btn svg {
+    width: 72px;
+    height: 90px;
+  }
+
+  .milo-bubble-wrap {
+    max-width: 260px;
+    padding: 12px 14px;
+  }
+
+  .color-options-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .word-pair-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .color-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-btn {
+    padding: 6px 8px;
+    font-size: 0.78rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

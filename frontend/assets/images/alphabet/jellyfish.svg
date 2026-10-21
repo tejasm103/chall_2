@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Dome Body -->
+  <path d="M 20 48 C 20 22 80 22 80 48 Q 50 56 20 48 Z" fill="#BA68C8" />
+  <!-- Cute Eyes -->
+  <circle cx="40" cy="40" r="3" fill="#FFFFFF" />
+  <circle cx="41" cy="40" r="1.5" fill="#4A148C" />
+  <circle cx="60" cy="40" r="3" fill="#FFFFFF" />
+  <circle cx="61" cy="40" r="1.5" fill="#4A148C" />
+  <path d="M 47 45 Q 50 48 53 45" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" fill="none" />
+  <!-- Tentacles -->
+  <path d="M 30 52 Q 25 68 32 85" stroke="#CE93D8" stroke-width="3" stroke-linecap="round" fill="none" />
+  <path d="M 42 52 Q 48 70 40 88" stroke="#BA68C8" stroke-width="3" stroke-linecap="round" fill="none" />
+  <path d="M 58 52 Q 52 70 60 88" stroke="#BA68C8" stroke-width="3" stroke-linecap="round" fill="none" />
+  <path d="M 70 52 Q 75 68 68 85" stroke="#CE93D8" stroke-width="3" stroke-linecap="round" fill="none" />
+</svg>

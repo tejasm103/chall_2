@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Educational Games Hub — MindVerse</title>
+  <meta name="description" content="Engaging accessible educational mini-games: Color Matcher, Emotion Recognizer, Object Counter, and Picture-Word Pairing.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
+  
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/games.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+  <canvas id="bgCanvas"></canvas>
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility Toolbar"></aside>
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="../assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="../index.html" class="nav-link">🏠 Home</a>
+        <a href="dashboard.html" class="nav-link">🌟 Dashboard</a>
+        <a href="alphabet.html" class="nav-link">🔤 Alphabet</a>
+        <a href="lessons.html" class="nav-link">📚 Lessons</a>
+        <a href="games.html" class="nav-link active">🎮 Games</a>
+        <a href="videos.html" class="nav-link">🎬 Videos</a>
+        <a href="daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="caregiver.html" class="nav-link">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content" role="main">
+    <div class="page-header">
+      <h1 class="page-title">Educational Games Hub</h1>
+      <p class="page-subtitle">Playful learning activities with gentle pacing, star awards, and positive reinforcement.</p>
+    </div>
+
+    <!-- Active Game Arena (Hidden until a game is launched) -->
+    <section id="gameArena" class="game-arena" style="display: none;" aria-label="Active Mini Game Arena">
+      <!-- Game Score Bar -->
+      <div class="game-score-bar">
+        <div class="score-item" id="gameRoundText">Round 1 of 5</div>
+        <div class="score-item" id="gameScoreText">Score: 0</div>
+        <div class="stars-display" id="gameStarsDisplay">
+          <span>★</span><span>★</span><span>★</span>
+        </div>
+      </div>
+
+      <!-- Injected Game Body -->
+      <div id="gameArenaBody">
+        <!-- Interactive game choices appear here -->
+      </div>
+    </section>
+
+    <!-- 4 Games Catalog -->
+    <section aria-label="Select an Educational Game">
+      <div class="games-grid">
+        <!-- 1. Color Matcher -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">🎨</div>
+            <div class="badge badge-gentle" style="margin-bottom: 8px;">Visual Perception</div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 8px;">Color Matcher</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">
+              Identify colors from large cards with text labels and pattern clues, making recognition multi-sensory and accessible.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="LearningGames.start('color-matcher', 'easy')" style="flex: 1;">
+              Play Easy
+            </button>
+            <button class="btn btn-outline" onclick="LearningGames.start('color-matcher', 'hard')" style="flex: 1;">
+              Hard Mode
+            </button>
+          </div>
+        </article>
+
+        <!-- 2. Emotion Recognizer -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">😊</div>
+            <div class="badge badge-moderate" style="margin-bottom: 8px;">Social-Emotional</div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 8px;">Emotion Recognizer</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">
+              Explore illustrated facial expressions such as happy, calm, sad, surprised, and angry with thoughtful context.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-primary" onclick="LearningGames.start('emotion-recognizer', 'easy')" style="width: 100%;">
+              Play Emotion Match
+            </button>
+          </div>
+        </article>
+
+        <!-- 3. Object Counter -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">🔢</div>
+            <div class="badge badge-structured" style="margin-bottom: 8px;">Early Mathematics</div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 8px;">Object Counter</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">
+              Count familiar objects (apples, stars, fish, ducks) one by one and pick the matching number.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-secondary" onclick="LearningGames.start('object-counter', 'easy')" style="width: 100%;">
+              Play Object Counter
+            </button>
+          </div>
+        </article>
+
+        <!-- 4. Picture-Word Pairing -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">📖</div>
+            <div class="badge badge-empowering" style="margin-bottom: 8px;">Language Arts</div>
+            <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 8px;">Picture–Word Pairing</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">
+              Match cheerful illustrations with their written sight words, accompanied by audio pronunciation.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-primary" onclick="LearningGames.start('picture-word-pairing', 'easy')" style="width: 100%;">
+              Play Word Pairing
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>MindVerse Educational Games &copy; 2026. Non-punitive game scoring, transparent star criteria.</div>
+      <a href="dashboard.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🌟 Return to Dashboard</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/sound-engine.js"></script>
+  <script src="../js/three-fallback.js"></script>
+  <script src="../js/three-world.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/learning-games.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Video Library — MindVerse</title>
+  <meta name="description" content="Calm educational videos with WebVTT captions, interactive sync transcripts, playback speed controls, and sensory visual filters.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
+  
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/video-player.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+  <canvas id="bgCanvas"></canvas>
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility Toolbar"></aside>
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="../assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="../index.html" class="nav-link">🏠 Home</a>
+        <a href="dashboard.html" class="nav-link">🌟 Dashboard</a>
+        <a href="alphabet.html" class="nav-link">🔤 Alphabet</a>
+        <a href="lessons.html" class="nav-link">📚 Lessons</a>
+        <a href="games.html" class="nav-link">🎮 Games</a>
+        <a href="videos.html" class="nav-link active">🎬 Videos</a>
+        <a href="daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="caregiver.html" class="nav-link">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content" role="main">
+    <div class="page-header">
+      <h1 class="page-title">Accessible Video Library</h1>
+      <p class="page-subtitle">Educational demonstrations with interactive transcripts, closed captions, and sensory contrast filters.</p>
+    </div>
+
+    <!-- Video Library Grid -->
+    <div id="videoLibraryGrid" class="video-library-grid" role="region" aria-label="Educational Videos">
+      <!-- Injected via JavaScript -->
+    </div>
+  </main>
+
+  <!-- Custom Accessible Video Player Modal -->
+  <div id="videoPlayerModal" class="video-player-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalVideoTitle">
+    <div class="video-modal-content">
+      <!-- Top Bar -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border-light);">
+        <h2 id="modalVideoTitle" style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Video Title</h2>
+        <button id="closeVideoModalBtn" class="btn btn-outline" style="min-height: 36px; padding: 4px 12px; font-weight: 700;" aria-label="Close video player">
+          ✕ Close
+        </button>
+      </div>
+
+      <!-- Video Display Container -->
+      <div id="modalVideoContainer" class="video-screen-wrapper video-container filter-normal">
+        <canvas id="demoVideoCanvas" width="800" height="450" style="width: 100%; height: 100%;"></canvas>
+        <div id="modalVttCaptionBox" class="vtt-caption-box active" aria-live="polite">
+          Captions loading...
+        </div>
+      </div>
+
+      <!-- Accessible Video Controls Bar -->
+      <div class="video-controls-bar">
+        <div class="video-controls-left">
+          <button id="modalPlayPauseBtn" class="v-ctrl-btn" aria-label="Play or Pause Video">▶ Play</button>
+          <button id="modalRestartBtn" class="v-ctrl-btn" aria-label="Restart Video from Beginning">🔄 Restart</button>
+          <span id="videoCurrentTimeDisplay" style="font-weight: 700; font-size: 0.9rem; margin-left: 8px;">0:00 / 2:15</span>
+        </div>
+
+        <div class="video-controls-right">
+          <!-- Playback Speed -->
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Speed:</span>
+            <button class="v-ctrl-btn speed-btn" data-speed="0.5">0.5x</button>
+            <button class="v-ctrl-btn speed-btn" data-speed="0.75">0.75x</button>
+            <button class="v-ctrl-btn speed-btn active" data-speed="1.0">1.0x</button>
+          </div>
+
+          <!-- Contrast Filter -->
+          <div style="display: flex; align-items: center; gap: 4px; margin-left: 8px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Filter:</span>
+            <button class="v-ctrl-btn filter-btn active" data-filter="normal" title="Normal contrast">Normal</button>
+            <button class="v-ctrl-btn filter-btn" data-filter="dim" title="Dimmed brightness">Dim</button>
+            <button class="v-ctrl-btn filter-btn" data-filter="warm" title="Warm sensory tint">Warm</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Transcript Box -->
+      <div class="interactive-transcript-container" aria-label="Synchronized Transcript">
+        <div class="transcript-header">Interactive Transcript (Click any line to seek)</div>
+        <div id="transcriptLinesContainer">
+          <!-- Injected lines -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>MindVerse Video Library &copy; 2026. Local visual demonstrations with synchronized transcripts.</div>
+      <a href="dashboard.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🌟 Return to Dashboard</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/sound-engine.js"></script>
+  <script src="../js/three-fallback.js"></script>
+  <script src="../js/three-world.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    const SAMPLE_TRANSCRIPTS = {
+      1: [
+        { time: 0, text: "Welcome to Calming Deep Breaths with Milo." },
+        { time: 15, text: "Let's sit comfortably and soften our shoulders." },
+        { time: 35, text: "Breathe in gently as the circle grows large: 1, 2, 3..." },
+        { time: 60, text: "Now hold softly, feeling calm and peaceful." },
+        { time: 80, text: "Gently exhale and let all tension drift away." },
+        { time: 105, text: "You did wonderful. Your mind is ready to learn!" }
+      ],
+      2: [
+        { time: 0, text: "The Phonics Melody Song: Letters A to Z." },
+        { time: 20, text: "A says ah as in apple. B says buh as in ball." },
+        { time: 45, text: "C says kuh as in cat. D says duh as in duck." },
+        { time: 70, text: "Sing along with clear sounds and happy smiles!" }
+      ],
+      3: [
+        { time: 0, text: "Counting Playful Stars 1 to 10." },
+        { time: 20, text: "Here comes star number one, glowing bright yellow!" },
+        { time: 45, text: "Two, three, four... more stars join the dance!" },
+        { time: 70, text: "Five bright stars shining in the quiet sky." }
+      ],
+      4: [
+        { time: 0, text: "Recognizing Feelings & Facial Expressions with Friends." },
+        { time: 25, text: "Notice a happy smile with upturned corners." },
+        { time: 50, text: "A calm face is resting and peaceful." },
+        { time: 75, text: "Every person shows their feelings in their own special way." }
+      ],
+      5: [
+        { time: 0, text: "The Step-by-Step Handwashing Song." },
+        { time: 15, text: "Step 1: Turn on clean warm water and wet hands." },
+        { time: 35, text: "Step 2: Add bubbly soap and scrub for 20 seconds!" },
+        { time: 65, text: "Step 3: Rinse all the bubbles away under clean water." },
+        { time: 90, text: "Step 4: Dry with a clean towel. Fresh and clean!" }
+      ]
+    };
+
+    let activeVideo = null;
+    let isPlaying = false;
+    let currentTime = 0;
+    let playbackSpeed = 1.0;
+    let tickerId = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadVideos();
+      bindPlayerControls();
+    });
+
+    async function loadVideos() {
+      const grid = document.getElementById('videoLibraryGrid');
+      if (!grid) return;
+
+      const videos = await window.MindVerseAPI.getVideos();
+      if (!videos || videos.length === 0) {
+        grid.innerHTML = '<p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">No videos found.</p>';
+        return;
+      }
+
+      grid.innerHTML = videos.map(v => `
+        <article class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="video-card-poster" onclick="openVideoPlayer(${v.id})" role="button" tabindex="0" aria-label="Play video: ${v.title}">
+            <img src="../assets/images/${v.poster_file}" alt="Poster for ${v.title}" />
+            <div class="video-play-overlay-btn" aria-hidden="true">▶</div>
+          </div>
+          <div style="padding: 20px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span class="badge badge-gentle">${v.subject}</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">⏱️ ${v.duration}</span>
+              </div>
+              <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">${v.title}</h2>
+              <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">${v.description}</p>
+            </div>
+            <div style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between;">
+              <button class="btn btn-primary" onclick="openVideoPlayer(${v.id})" style="padding: 8px 16px; min-height: 40px; font-size: 0.9rem;">
+                ▶ Watch Video
+              </button>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">👁️ ${v.plays_count} plays</span>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function openVideoPlayer(videoId) {
+      activeVideo = await window.MindVerseAPI.getVideoDetail(videoId);
+      if (!activeVideo) return;
+
+      // Track play in database
+      await window.MindVerseAPI.trackVideoPlay(videoId);
+
+      document.getElementById('modalVideoTitle').textContent = activeVideo.title;
+      const modal = document.getElementById('videoPlayerModal');
+      modal.classList.remove('hidden');
+
+      currentTime = 0;
+      isPlaying = true;
+      document.getElementById('modalPlayPauseBtn').textContent = '⏸ Pause';
+
+      renderTranscript(videoId);
+      startDemoAnimation();
+
+      if (window.MiloCompanion) {
+        window.MiloCompanion.speak(`Now playing: ${activeVideo.title}`);
+      }
+    }
+
+    function renderTranscript(videoId) {
+      const container = document.getElementById('transcriptLinesContainer');
+      const lines = SAMPLE_TRANSCRIPTS[videoId] || SAMPLE_TRANSCRIPTS[1];
+
+      container.innerHTML = lines.map((l, i) => `
+        <div class="transcript-line ${i === 0 ? 'current' : ''}" data-time="${l.time}">
+          <strong style="color: var(--color-primary); margin-right: 8px;">[${formatTime(l.time)}]</strong>
+          <span>${l.text}</span>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.transcript-line').forEach(el => {
+        el.addEventListener('click', () => {
+          currentTime = parseInt(el.getAttribute('data-time'), 10);
+          updateCaptionsAndTranscript();
+        });
+      });
+    }
+
+    function bindPlayerControls() {
+      document.getElementById('closeVideoModalBtn')?.addEventListener('click', () => {
+        document.getElementById('videoPlayerModal').classList.add('hidden');
+        isPlaying = false;
+        clearInterval(tickerId);
+      });
+
+      document.getElementById('modalPlayPauseBtn')?.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        document.getElementById('modalPlayPauseBtn').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+      });
+
+      document.getElementById('modalRestartBtn')?.addEventListener('click', () => {
+        currentTime = 0;
+        isPlaying = true;
+        document.getElementById('modalPlayPauseBtn').textContent = '⏸ Pause';
+        updateCaptionsAndTranscript();
+      });
+
+      // Speed switcher
+      document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          playbackSpeed = parseFloat(btn.getAttribute('data-speed'));
+        });
+      });
+
+      // Filter switcher
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const filter = btn.getAttribute('data-filter');
+          const container = document.getElementById('modalVideoContainer');
+          container.className = `video-screen-wrapper video-container filter-${filter}`;
+        });
+      });
+    }
+
+    // Procedural Demonstration Visualizer for Canvas Video Playback
+    function startDemoAnimation() {
+      clearInterval(tickerId);
+      const canvas = document.getElementById('demoVideoCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      tickerId = setInterval(() => {
+        if (!isPlaying) return;
+
+        currentTime += 1 * playbackSpeed;
+        const totalDuration = 135; // 2:15 in seconds
+        if (currentTime > totalDuration) {
+          currentTime = totalDuration;
+          isPlaying = false;
+          document.getElementById('modalPlayPauseBtn').textContent = '▶ Play';
+        }
+
+        document.getElementById('videoCurrentTimeDisplay').textContent = `${formatTime(currentTime)} / ${formatTime(totalDuration)}`;
+        updateCaptionsAndTranscript();
+
+        // Draw animated relaxing visual demo
+        ctx.fillStyle = '#0F172A';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Breathing circle expansion/contraction
+        const cycle = (currentTime % 10) / 10;
+        const radius = 50 + Math.sin(cycle * Math.PI * 2) * 35;
+
+        const grad = ctx.createRadialGradient(400, 225, 10, 400, 225, radius + 20);
+        grad.addColorStop(0, '#48CAE4');
+        grad.addColorStop(0.7, '#2A9D8F');
+        grad.addColorStop(1, 'rgba(42, 157, 143, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(400, 225, radius + 20, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(activeVideo ? activeVideo.title : 'Educational Demonstration', 400, 340);
+
+      }, 1000);
+    }
+
+    function updateCaptionsAndTranscript() {
+      const lines = SAMPLE_TRANSCRIPTS[activeVideo ? activeVideo.id : 1] || SAMPLE_TRANSCRIPTS[1];
+      let currentLine = lines[0];
+
+      for (const l of lines) {
+        if (currentTime >= l.time) {
+          currentLine = l;
+        }
+      }
+
+      const captionBox = document.getElementById('modalVttCaptionBox');
+      if (captionBox) {
+        captionBox.textContent = currentLine.text;
+      }
+
+      document.querySelectorAll('.transcript-line').forEach(el => {
+        const t = parseInt(el.getAttribute('data-time'), 10);
+        if (t === currentLine.time) {
+          el.classList.add('current');
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          el.classList.remove('current');
+        }
+      });
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alphabet & Phonics Wall — MindVerse</title>
+  <meta name="description" content="Explore letters A to Z with original tactile illustrations, sound cues, word pronunciation, and gentle recognition activities.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
+  
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <style>
+    .alphabet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .letter-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 16px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+      min-height: 140px;
+    }
+
+    .letter-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .letter-card.selected {
+      border-color: var(--color-secondary);
+      background: #EBF8FF;
+      box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.35);
+    }
+
+    .letter-card:focus-visible {
+      outline: 4px solid var(--border-focus);
+    }
+
+    .letter-case-text {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .letter-img-preview {
+      width: 44px;
+      height: 44px;
+      margin: 6px 0;
+    }
+
+    .letter-word-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    /* Detail Inspector View */
+    .phonics-inspector {
+      background: var(--bg-card);
+      border: 2px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+  <canvas id="bgCanvas"></canvas>
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility Toolbar"></aside>
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="../assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="../index.html" class="nav-link">🏠 Home</a>
+        <a href="dashboard.html" class="nav-link">🌟 Dashboard</a>
+        <a href="alphabet.html" class="nav-link active">🔤 Alphabet</a>
+        <a href="lessons.html" class="nav-link">📚 Lessons</a>
+        <a href="games.html" class="nav-link">🎮 Games</a>
+        <a href="videos.html" class="nav-link">🎬 Videos</a>
+        <a href="daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="caregiver.html" class="nav-link">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content" role="main">
+    <div class="page-header">
+      <h1 class="page-title">Alphabet & Phonics Wall</h1>
+      <p class="page-subtitle">Touch or select any letter card to hear its sound, see its picture, and practice words with Milo!</p>
+    </div>
+
+    <!-- Active Selected Letter Inspector -->
+    <section id="phonicsInspectorSection" class="phonics-inspector" aria-label="Active Letter Learning Detail">
+      <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+        <div style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-md); text-align: center; min-width: 120px;">
+          <div id="inspLetterLarge" style="font-size: 3.5rem; font-weight: 800; color: var(--color-primary); line-height: 1;">A a</div>
+          <div id="inspPhonicCue" style="font-size: 1rem; font-weight: 700; color: var(--color-secondary); margin-top: 4px;">/æ/ Sound</div>
+        </div>
+
+        <div>
+          <h2 id="inspWordLarge" style="font-size: 2.2rem; font-weight: 800; margin-bottom: 6px;">Apple</h2>
+          <p id="inspInstruction" style="font-size: 1.15rem; color: var(--text-muted); max-width: 480px; margin-bottom: 16px;">
+            Letter <strong>A</strong> says <em>/æ/</em> as in <strong>Apple</strong>!
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button id="hearPhonicsAudioBtn" class="btn btn-primary" aria-label="Hear pronunciation for this letter">
+              🔊 Hear Letter & Word
+            </button>
+            <button id="tryLetterChallengeBtn" class="btn btn-secondary" aria-label="Practice recognizing this letter">
+              ⭐ Recognition Challenge
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; min-width: 160px;">
+        <img id="inspObjectImg" src="../assets/images/alphabet/apple.svg" alt="Illustration of Apple" style="width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));" />
+      </div>
+    </section>
+
+    <!-- Complete A to Z Interactive Grid -->
+    <section aria-label="A to Z Letter Cards Grid">
+      <div id="alphabetWallGrid" class="alphabet-grid" role="group">
+        <!-- 26 Letter Cards Injected via JS -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>MindVerse Alphabet Phonics Lab &copy; 2026. Non-audio alternatives provided for every letter.</div>
+      <a href="dashboard.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🌟 Return to Dashboard</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/sound-engine.js"></script>
+  <script src="../js/three-fallback.js"></script>
+  <script src="../js/three-world.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    const ALPHABET_ITEMS = [
+      { letter: "A", lower: "a", word: "Apple", cue: "/æ/ sound", icon: "../assets/images/alphabet/apple.svg", hint: "A says ah as in crisp red apple!" },
+      { letter: "B", lower: "b", word: "Ball", cue: "/b/ sound", icon: "../assets/images/alphabet/ball.svg", hint: "B says buh as in bouncy ball!" },
+      { letter: "C", lower: "c", word: "Cat", cue: "/k/ sound", icon: "../assets/images/alphabet/cat.svg", hint: "C says kuh as in friendly cat!" },
+      { letter: "D", lower: "d", word: "Duck", cue: "/d/ sound", icon: "../assets/images/alphabet/duck.svg", hint: "D says duh as in swimming duck!" },
+      { letter: "E", lower: "e", word: "Elephant", cue: "/e/ sound", icon: "../assets/images/alphabet/elephant.svg", hint: "E says eh as in gentle elephant!" },
+      { letter: "F", lower: "f", word: "Fish", cue: "/f/ sound", icon: "../assets/images/alphabet/fish.svg", hint: "F says fuh as in swimming fish!" },
+      { letter: "G", lower: "g", word: "Giraffe", cue: "/g/ sound", icon: "../assets/images/alphabet/giraffe.svg", hint: "G says juh as in tall giraffe!" },
+      { letter: "H", lower: "h", word: "House", cue: "/h/ sound", icon: "../assets/images/alphabet/house.svg", hint: "H says huh as in cozy house!" },
+      { letter: "I", lower: "i", word: "Igloo", cue: "/ɪ/ sound", icon: "../assets/images/alphabet/igloo.svg", hint: "I says ih as in snowy igloo!" },
+      { letter: "J", lower: "j", word: "Jellyfish", cue: "/dʒ/ sound", icon: "../assets/images/alphabet/jellyfish.svg", hint: "J says juh as in floating jellyfish!" },
+      { letter: "K", lower: "k", word: "Kite", cue: "/k/ sound", icon: "../assets/images/alphabet/kite.svg", hint: "K says kuh as in high flying kite!" },
+      { letter: "L", lower: "l", word: "Lion", cue: "/l/ sound", icon: "../assets/images/alphabet/lion.svg", hint: "L says luh as in proud lion!" },
+      { letter: "M", lower: "m", word: "Moon", cue: "/m/ sound", icon: "../assets/images/alphabet/moon.svg", hint: "M says mm as in shining moon!" },
+      { letter: "N", lower: "n", word: "Nest", cue: "/n/ sound", icon: "../assets/images/alphabet/nest.svg", hint: "N says nuh as in safe bird nest!" },
+      { letter: "O", lower: "o", word: "Owl", cue: "/ɒ/ sound", icon: "../assets/images/alphabet/owl.svg", hint: "O says ah as in wise night owl!" },
+      { letter: "P", lower: "p", word: "Penguin", cue: "/p/ sound", icon: "../assets/images/alphabet/penguin.svg", hint: "P says puh as in waddling penguin!" },
+      { letter: "Q", lower: "q", word: "Queen", cue: "/kw/ sound", icon: "../assets/images/alphabet/queen.svg", hint: "Q says kwuh as in royal queen!" },
+      { letter: "R", lower: "r", word: "Rainbow", cue: "/r/ sound", icon: "../assets/images/alphabet/rainbow.svg", hint: "R says ruh as in colorful rainbow!" },
+      { letter: "S", lower: "s", word: "Sun", cue: "/s/ sound", icon: "../assets/images/alphabet/sun.svg", hint: "S says ss as in warm cheerful sun!" },
+      { letter: "T", lower: "t", word: "Tree", cue: "/t/ sound", icon: "../assets/images/alphabet/tree.svg", hint: "T says tuh as in tall green tree!" },
+      { letter: "U", lower: "u", word: "Umbrella", cue: "/ʌ/ sound", icon: "../assets/images/alphabet/umbrella.svg", hint: "U says uh as in shelter umbrella!" },
+      { letter: "V", lower: "v", word: "Volcano", cue: "/v/ sound", icon: "../assets/images/alphabet/volcano.svg", hint: "V says vvv as in mighty volcano!" },
+      { letter: "W", lower: "w", word: "Whale", cue: "/w/ sound", icon: "../assets/images/alphabet/whale.svg", hint: "W says wuh as in ocean whale!" },
+      { letter: "X", lower: "x", word: "Xylophone", cue: "/z/ sound", icon: "../assets/images/alphabet/xylophone.svg", hint: "X says musical tones on the xylophone!" },
+      { letter: "Y", lower: "y", word: "Yacht", cue: "/j/ sound", icon: "../assets/images/alphabet/yacht.svg", hint: "Y says yuh as in sailing yacht!" },
+      { letter: "Z", lower: "z", word: "Zebra", cue: "/z/ sound", icon: "../assets/images/alphabet/zebra.svg", hint: "Z says zzz as in striped zebra!" }
+    ];
+
+    let currentItem = ALPHABET_ITEMS[0];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAlphabetGrid();
+      selectLetter(ALPHABET_ITEMS[0], false);
+
+      document.getElementById('hearPhonicsAudioBtn')?.addEventListener('click', () => {
+        if (window.MiloCompanion) {
+          window.MiloCompanion.speak(`Letter ${currentItem.letter}. ${currentItem.word}. ${currentItem.cue}. ${currentItem.hint}`);
+        }
+      });
+
+      document.getElementById('tryLetterChallengeBtn')?.addEventListener('click', () => {
+        if (window.MiloCompanion) {
+          window.MiloCompanion.celebrate(`Terrific! You mastered the letter ${currentItem.letter} for ${currentItem.word}!`);
+        }
+        if (window.SoundEngine) window.SoundEngine.playSuccess();
+      });
+    });
+
+    function renderAlphabetGrid() {
+      const grid = document.getElementById('alphabetWallGrid');
+      if (!grid) return;
+
+      grid.innerHTML = ALPHABET_ITEMS.map((item, idx) => `
+        <button class="letter-card ${idx === 0 ? 'selected' : ''}" data-idx="${idx}" aria-label="Letter ${item.letter} ${item.lower}, ${item.word}">
+          <div class="letter-case-text">${item.letter} ${item.lower}</div>
+          <img src="${item.icon}" alt="${item.word}" class="letter-img-preview" />
+          <div class="letter-word-label">${item.word}</div>
+        </button>
+      `).join('');
+
+      grid.querySelectorAll('.letter-card').forEach(card => {
+        card.addEventListener('click', () => {
+          grid.querySelectorAll('.letter-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          const idx = parseInt(card.getAttribute('data-idx'), 10);
+          selectLetter(ALPHABET_ITEMS[idx], true);
+        });
+      });
+    }
+
+    function selectLetter(item, announce = true) {
+      currentItem = item;
+      document.getElementById('inspLetterLarge').textContent = `${item.letter} ${item.lower}`;
+      document.getElementById('inspPhonicCue').textContent = `${item.cue}`;
+      document.getElementById('inspWordLarge').textContent = item.word;
+      document.getElementById('inspInstruction').innerHTML = `Letter <strong>${item.letter}</strong> says <em>${item.cue}</em> as in <strong>${item.word}</strong>!`;
+      document.getElementById('inspObjectImg').src = item.icon;
+      document.getElementById('inspObjectImg').alt = `Illustration of ${item.word}`;
+
+      if (announce && window.MiloCompanion) {
+        window.MiloCompanion.speak(`Letter ${item.letter}. ${item.word}.`);
+      }
+    }
+  </script>
+</body>
+</html>

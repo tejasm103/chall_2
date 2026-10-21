@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Wooden base -->
+  <polygon points="18,28 82,36 78,80 22,76" fill="#8D6E63" />
+  <!-- Colorful bars -->
+  <rect x="22" y="32" width="10" height="42" rx="2" fill="#E53935" />
+  <rect x="34" y="34" width="10" height="38" rx="2" fill="#FB8C00" />
+  <rect x="46" y="36" width="10" height="34" rx="2" fill="#FDD835" />
+  <rect x="58" y="38" width="10" height="30" rx="2" fill="#43A047" />
+  <rect x="70" y="40" width="10" height="26" rx="2" fill="#1E88E5" />
+  <!-- Mallet -->
+  <line x1="84" y1="20" x2="60" y2="50" stroke="#D7CCC8" stroke-width="3" stroke-linecap="round" />
+  <circle cx="84" cy="20" r="5" fill="#FF5252" />
+</svg>

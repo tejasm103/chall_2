@@ -1,0 +1,33 @@
+# Render Blueprint Configuration for MindVerse Backend
+# Deploys Python Flask REST API with Gunicorn on Render
+
+services:
+  - type: web
+    name: mindverse-api
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120"
+    healthCheckPath: /api/health
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE
+        value: /var/data/mindverse.db
+      - key: FRONTEND_ORIGIN
+        sync: false
+        # Set this to your deployed Netlify frontend URL:
+        # value: https://mindverse-lab.netlify.app
+
+    # Persistent Disk for SQLite durability on cloud hosting
+    # Note: On free Render tier, ephemeral disk is used unless a Starter disk is attached.
+    disk:
+      name: mindverse-data
+      mountPath: /var/data
+      sizeGB: 1

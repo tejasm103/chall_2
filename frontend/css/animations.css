@@ -1,0 +1,139 @@
+/* MindVerse — Inclusive Learning Lab: Gentle Animations & Micro-Interactions */
+
+/* Gentle breathing animation for Milo the companion */
+@keyframes miloBreathe {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Gentle antenna glow */
+@keyframes antennaPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px #FFD166);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px #FFD166);
+  }
+}
+
+/* Gentle celebratory arm wave */
+@keyframes miloWave {
+  0%, 100% {
+    transform: rotate(0deg);
+    transform-origin: 122px 140px;
+  }
+  25% {
+    transform: rotate(-18deg);
+    transform-origin: 122px 140px;
+  }
+  75% {
+    transform: rotate(18deg);
+    transform-origin: 122px 140px;
+  }
+}
+
+/* Speaking mouth flutter */
+@keyframes mouthTalk {
+  0%, 100% {
+    transform: scaleY(1);
+    transform-origin: 80px 90px;
+  }
+  50% {
+    transform: scaleY(1.5);
+    transform-origin: 80px 90px;
+  }
+}
+
+/* Star celebration bounce */
+@keyframes starShimmer {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(5deg);
+  }
+}
+
+/* Floating bubble animation for bubble pop skill */
+@keyframes bubbleFloat {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.03);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Soft card entrance fade */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply animation classes */
+.milo-idle #miloHead,
+.milo-idle #miloTorso {
+  animation: miloBreathe 4s ease-in-out infinite;
+}
+
+.milo-speaking #miloAntennaBulb {
+  animation: antennaPulse 1.5s ease-in-out infinite;
+}
+
+.milo-speaking #miloMouthSpeaking {
+  animation: mouthTalk 0.35s ease-in-out infinite;
+}
+
+.milo-celebrating #miloRightArm {
+  animation: miloWave 0.8s ease-in-out infinite;
+}
+
+.milo-celebrating #miloChestStar {
+  animation: starShimmer 1s ease-in-out infinite;
+}
+
+.bubble-floating {
+  animation: bubbleFloat 3s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: cardFadeIn 0.3s ease-out forwards;
+}
+
+/* Ensure reduced motion disables all animations */
+@media (prefers-reduced-motion: reduce) {
+  .milo-idle #miloHead,
+  .milo-idle #miloTorso,
+  .milo-speaking #miloAntennaBulb,
+  .milo-speaking #miloMouthSpeaking,
+  .milo-celebrating #miloRightArm,
+  .milo-celebrating #miloChestStar,
+  .bubble-floating,
+  .fade-in {
+    animation: none !important;
+  }
+}
+
+[data-reduced-motion="true"] .milo-idle #miloHead,
+[data-reduced-motion="true"] .milo-idle #miloTorso,
+[data-reduced-motion="true"] .milo-speaking #miloAntennaBulb,
+[data-reduced-motion="true"] .milo-speaking #miloMouthSpeaking,
+[data-reduced-motion="true"] .milo-celebrating #miloRightArm,
+[data-reduced-motion="true"] .milo-celebrating #miloChestStar,
+[data-reduced-motion="true"] .bubble-floating,
+[data-reduced-motion="true"] .fade-in {
+  animation: none !important;
+}

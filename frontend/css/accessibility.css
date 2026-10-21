@@ -1,0 +1,220 @@
+/* MindVerse — Inclusive Learning Lab: Accessibility Themes & Controls */
+
+/* ----------------- 1. VISUAL THEMES ----------------- */
+
+/* Default Theme: Soft daylight, cerulean, teal, and slate */
+[data-theme="default"] {
+  --color-primary: #3A86C8;
+  --color-primary-hover: #2B6CB0;
+  --color-secondary: #2A9D8F;
+  --color-secondary-hover: #21867A;
+  --color-accent: #FFD166;
+  --bg-page: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-surface: #F1F5F9;
+  --bg-surface-hover: #E2E8F0;
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --border-light: #E2E8F0;
+  --border-focus: #3A86C8;
+}
+
+/* High Contrast Dark: Black background, #FFD700 yellow accents, white text */
+[data-theme="high-contrast-dark"] {
+  --color-primary: #FFD700;
+  --color-primary-hover: #FFF176;
+  --color-secondary: #00E5FF;
+  --color-secondary-hover: #80D8FF;
+  --color-accent: #FFD700;
+  --bg-page: #000000;
+  --bg-card: #121212;
+  --bg-surface: #1E1E1E;
+  --bg-surface-hover: #2C2C2C;
+  --text-main: #FFFFFF;
+  --text-muted: #CCCCCC;
+  --border-light: #FFD700;
+  --border-focus: #FFD700;
+}
+
+[data-theme="high-contrast-dark"] .app-header {
+  background: #000000;
+  border-bottom: 2px solid #FFD700;
+}
+
+[data-theme="high-contrast-dark"] .nav-link {
+  color: #FFFFFF;
+}
+
+[data-theme="high-contrast-dark"] .nav-link.active {
+  background: #FFD700;
+  color: #000000;
+  border-color: #FFD700;
+}
+
+[data-theme="high-contrast-dark"] .card {
+  border: 2px solid #FFD700;
+  background: #121212;
+}
+
+[data-theme="high-contrast-dark"] .btn-primary {
+  background: #FFD700;
+  color: #000000;
+  font-weight: 800;
+  border: 2px solid #FFFFFF;
+}
+
+[data-theme="high-contrast-dark"] .btn-outline {
+  border: 2px solid #FFD700;
+  color: #FFD700;
+}
+
+/* High Contrast Light: White background, black text, navy borders */
+[data-theme="high-contrast-light"] {
+  --color-primary: #002D62;
+  --color-primary-hover: #001A3A;
+  --color-secondary: #004080;
+  --color-secondary-hover: #002D62;
+  --color-accent: #FFD700;
+  --bg-page: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-surface: #F0F4F8;
+  --bg-surface-hover: #D9E2EC;
+  --text-main: #000000;
+  --text-muted: #1A1A1A;
+  --border-light: #002D62;
+  --border-focus: #002D62;
+}
+
+[data-theme="high-contrast-light"] .app-header {
+  background: #FFFFFF;
+  border-bottom: 3px solid #002D62;
+}
+
+[data-theme="high-contrast-light"] .card {
+  border: 2px solid #002D62;
+}
+
+[data-theme="high-contrast-light"] .nav-link.active {
+  background: #002D62;
+  color: #FFFFFF;
+  border: 2px solid #002D62;
+}
+
+[data-theme="high-contrast-light"] .btn-primary {
+  background: #002D62;
+  color: #FFFFFF;
+  border: 2px solid #000000;
+}
+
+/* Pastel Calming: Muted sage, lavender, and warm sand */
+[data-theme="pastel-calming"] {
+  --color-primary: #78998D;
+  --color-primary-hover: #638477;
+  --color-secondary: #9D97B5;
+  --color-secondary-hover: #86809E;
+  --color-accent: #E9C46A;
+  --bg-page: #FAF7F2;
+  --bg-card: #FFFFFF;
+  --bg-surface: #F0ECE4;
+  --bg-surface-hover: #E4DDD2;
+  --text-main: #2D3748;
+  --text-muted: #5A6A80;
+  --border-light: #DCD5C9;
+  --border-focus: #78998D;
+}
+
+[data-theme="pastel-calming"] .app-header {
+  background: rgba(250, 247, 242, 0.95);
+  border-bottom: 2px solid #DCD5C9;
+}
+
+[data-theme="pastel-calming"] .nav-link.active {
+  background: #E4DDD2;
+  color: #2D3748;
+  border: 1px solid #78998D;
+}
+
+/* ----------------- 2. TYPOGRAPHY SCALING ----------------- */
+
+[data-font-size="standard"] {
+  --font-size-root: 16px;
+}
+
+[data-font-size="large"] {
+  --font-size-root: 18px;
+}
+
+[data-font-size="xlarge"] {
+  --font-size-root: 22px;
+}
+
+/* Dyslexia-Friendly Font (uses OpenDyslexic, Lexend, Comic Neue, and system legible fallbacks) */
+[data-dyslexia-font="true"] {
+  --font-base: 'Lexend', 'Comic Neue', 'Verdana', sans-serif;
+  letter-spacing: 0.35px;
+  word-spacing: 2px;
+  line-height: 1.8;
+}
+
+/* ----------------- 3. SENSORY CONTROLS ----------------- */
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ----------------- 4. VIDEO CONTRAST FILTERS ----------------- */
+
+.video-container.filter-normal video,
+.video-container.filter-normal canvas {
+  filter: none;
+}
+
+.video-container.filter-dim video,
+.video-container.filter-dim canvas {
+  filter: brightness(0.85) contrast(0.95);
+}
+
+.video-container.filter-warm video,
+.video-container.filter-warm canvas {
+  filter: sepia(0.25) saturate(0.9) brightness(0.95);
+}
+
+/* ----------------- 5. SPEECH CAPTIONS OVERLAY ----------------- */
+
+.speech-captions-overlay {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 1.1rem;
+  font-weight: 600;
+  max-width: 90%;
+  text-align: center;
+  z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: none;
+}
+
+.speech-captions-overlay.active {
+  display: block;
+}

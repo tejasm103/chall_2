@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caregiver & Teacher Portal — MindVerse</title>
+  <meta name="description" content="Caregiver and educator dashboard to manage student profiles, learning levels, sensory preferences, and real-time learning metrics.">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/mindverse-logo.svg">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/accessibility.css">
+  <link rel="stylesheet" href="/css/animations.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+  <canvas id="bgCanvas"></canvas>
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility Toolbar"></aside>
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="/index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="/assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="/index.html" class="nav-link">🏠 Home</a>
+        <a href="/pages/dashboard.html" class="nav-link">🌟 Dashboard</a>
+        <a href="/pages/alphabet.html" class="nav-link">🔤 Alphabet</a>
+        <a href="/pages/lessons.html" class="nav-link">📚 Lessons</a>
+        <a href="/pages/games.html" class="nav-link">🎮 Games</a>
+        <a href="/pages/videos.html" class="nav-link">🎬 Videos</a>
+        <a href="/pages/daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="/pages/computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="/pages/caregiver.html" class="nav-link active">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content" role="main">
+    <!-- Caregiver Header & Security Verification Notice -->
+    <div class="page-header" style="text-align: left; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h1 class="page-title">🛡️ Caregiver & Teacher Portal</h1>
+        <p class="page-subtitle">Track real student progression, configure learning levels, and manage sensory accessibility settings.</p>
+      </div>
+      <div id="authStatusBadge" class="badge badge-gentle" style="font-size: 0.9rem; padding: 8px 14px;">
+        🔒 Demo Access Mode (PIN: 1234)
+      </div>
+    </div>
+
+    <!-- Student Switcher & Profile Creator Bar -->
+    <section class="card" style="margin-bottom: 28px; padding: 20px 24px; background: var(--bg-surface);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <label for="caregiverStudentSelect" style="font-weight: 700;">Select Student Profile:</label>
+          <select id="caregiverStudentSelect" style="padding: 8px 16px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); font-weight: 700; font-size: 1rem; background: var(--bg-card); cursor: pointer;" aria-label="Select learner profile">
+            <!-- Injected via JavaScript -->
+          </select>
+        </div>
+
+        <button id="openNewStudentModalBtn" class="btn btn-primary" style="min-height: 42px; font-size: 0.95rem;">
+          ➕ Add New Learner
+        </button>
+      </div>
+    </section>
+
+    <!-- Real Statistical Metrics Grid -->
+    <section aria-labelledby="metricsOverviewHeading" style="margin-bottom: 32px;">
+      <h2 id="metricsOverviewHeading" style="font-size: 1.4rem; font-weight: 800; margin-bottom: 16px;">Real-Time Learning Metrics (SQLite)</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+        <div class="card" style="padding: 20px;">
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Total Stars Earned</div>
+          <div id="statCaregiverStars" style="font-size: 2.2rem; font-weight: 800; color: #D97706; margin-top: 4px;">--</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Lessons & Games Combined</div>
+        </div>
+
+        <div class="card" style="padding: 20px;">
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Curriculum Progress</div>
+          <div id="statCaregiverLessons" style="font-size: 2.2rem; font-weight: 800; color: #0284C7; margin-top: 4px;">--</div>
+          <div id="statCaregiverCompletionRate" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">0% Curriculum Complete</div>
+        </div>
+
+        <div class="card" style="padding: 20px;">
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Hints & Attempts</div>
+          <div id="statCaregiverHintsAttempts" style="font-size: 2.2rem; font-weight: 800; color: #7C3AED; margin-top: 4px;">--</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Positive errorless learning aids</div>
+        </div>
+
+        <div class="card" style="padding: 20px;">
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Game Accuracy</div>
+          <div id="statCaregiverGameAccuracy" style="font-size: 2.2rem; font-weight: 800; color: #16A34A; margin-top: 4px;">--</div>
+          <div id="statCaregiverGamesPlayed" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">0 games completed</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learner Configuration & Sensory Settings -->
+    <section class="card" style="margin-bottom: 32px; padding: 28px;">
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 20px;">⚙️ Learner Settings & Progression Controls</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div>
+          <label for="cfgLevelSelect" style="display: block; font-weight: 700; margin-bottom: 6px;">Configured Learning Level:</label>
+          <select id="cfgLevelSelect" style="width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); font-size: 1rem; background: var(--bg-card);" aria-label="Curriculum Level Config">
+            <option value="1">Level 1 — Discovering the World (Colors, Shapes)</option>
+            <option value="2">Level 2 — Foundational Phonics and Counting</option>
+            <option value="3">Level 3 — Early Academics & Emotions</option>
+            <option value="4">Level 4 — Primary Skills and Problem Solving</option>
+            <option value="5">Level 5 — Middle Skills & Logic</option>
+            <option value="6">Level 6 — Everyday Independence</option>
+          </select>
+          <small style="color: var(--text-muted); display: block; margin-top: 4px;">Adjustable at any time without locking content.</small>
+        </div>
+
+        <div>
+          <label for="cfgThemeSelect" style="display: block; font-weight: 700; margin-bottom: 6px;">Visual Theme:</label>
+          <select id="cfgThemeSelect" style="width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); font-size: 1rem; background: var(--bg-card);" aria-label="Theme Config">
+            <option value="default">Soft Daylight (Default)</option>
+            <option value="pastel-calming">Pastel Calming</option>
+            <option value="high-contrast-dark">High Contrast Dark (#FFD700 on Black)</option>
+            <option value="high-contrast-light">High Contrast Light</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="cfgFontSizeSelect" style="display: block; font-weight: 700; margin-bottom: 6px;">Typography Base Size:</label>
+          <select id="cfgFontSizeSelect" style="width: 100%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); font-size: 1rem; background: var(--bg-card);" aria-label="Font Size Config">
+            <option value="standard">Standard (16px)</option>
+            <option value="large">Large (18px)</option>
+            <option value="xlarge">Extra Large (22px)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+        <button id="saveLearnerConfigBtn" class="btn btn-secondary">
+          💾 Save Settings to SQLite
+        </button>
+      </div>
+    </section>
+
+    <!-- Activity Timeline / Audit Trail -->
+    <section class="card" style="margin-bottom: 32px; padding: 28px;">
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 16px;">📜 Recent Activity Audit History</h2>
+      <div id="caregiverActivityTimeline">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- Danger Zone: Reset Progress -->
+    <section class="card" style="border: 2px solid #FCA5A5; background: #FEF2F2; padding: 28px;">
+      <h2 style="font-size: 1.3rem; font-weight: 800; color: #991B1B; margin-bottom: 8px;">⚠️ Progress Reset Controls</h2>
+      <p style="color: #7F1D1D; font-size: 0.95rem; margin-bottom: 16px;">
+        Resetting progress clears completed lessons, stars, and game scores for the selected student so they can begin a fresh learning cycle. Routine templates and student profiles are preserved.
+      </p>
+      <button id="resetStudentProgressBtn" class="btn" style="background: #DC2626; color: #FFFFFF;" aria-label="Reset all progress with confirmation">
+        🗑️ Reset Student Progress
+      </button>
+    </section>
+  </main>
+
+  <!-- New Student Creation Modal -->
+  <div id="newStudentModal" class="video-player-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalNewStudentTitle">
+    <div class="video-modal-content" style="max-width: 500px; padding: 28px;">
+      <h2 id="modalNewStudentTitle" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 16px;">Create New Learner Profile</h2>
+      <div style="margin-bottom: 16px;">
+        <label for="newStudentNameInput" style="display: block; font-weight: 700; margin-bottom: 6px;">Learner First Name:</label>
+        <input type="text" id="newStudentNameInput" placeholder="e.g. Charlie" style="width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); font-size: 1rem;" />
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <label for="newStudentLevelSelect" style="display: block; font-weight: 700; margin-bottom: 6px;">Starting Level:</label>
+        <select id="newStudentLevelSelect" style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); font-size: 1rem;">
+          <option value="1">Level 1 — Discovering the World</option>
+          <option value="2">Level 2 — Foundational Phonics & Counting</option>
+          <option value="3">Level 3 — Early Academics & Emotions</option>
+          <option value="4">Level 4 — Problem Solving</option>
+          <option value="5">Level 5 — Middle Skills & Logic</option>
+          <option value="6">Level 6 — Everyday Independence</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button id="cancelNewStudentBtn" class="btn btn-outline">Cancel</button>
+        <button id="confirmCreateStudentBtn" class="btn btn-primary">Create Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>MindVerse Caregiver Dashboard &copy; 2026. Private data handled locally and securely.</div>
+      <a href="/pages/dashboard.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🌟 Return to Dashboard</a>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/sound-engine.js"></script>
+  <script src="/js/three-fallback.js"></script>
+  <script src="/js/three-world.js"></script>
+  <script src="/js/character.js"></script>
+  <script src="/js/accessibility.js"></script>
+  <script src="/js/main.js"></script>
+
+  <script>
+    let activeStudentId = 1;
+    let studentsList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadStudentProfiles();
+      await loadStudentStatistics();
+
+      // Student change
+      document.getElementById('caregiverStudentSelect')?.addEventListener('change', async (e) => {
+        activeStudentId = parseInt(e.target.value, 10);
+        await loadStudentStatistics();
+      });
+
+      // Save settings
+      document.getElementById('saveLearnerConfigBtn')?.addEventListener('click', async () => {
+        const level = parseInt(document.getElementById('cfgLevelSelect').value, 10);
+        const theme = document.getElementById('cfgThemeSelect').value;
+        const fontSize = document.getElementById('cfgFontSizeSelect').value;
+
+        await window.MindVerseAPI.updateStudent(activeStudentId, {
+          learning_level: level,
+          preferred_theme: theme,
+          font_size: fontSize
+        });
+
+        alert("✅ Learner preferences updated in SQLite successfully!");
+        await loadStudentStatistics();
+      });
+
+      // Reset progress with confirmation
+      document.getElementById('resetStudentProgressBtn')?.addEventListener('click', async () => {
+        const confirmed = confirm("Are you sure you want to reset all lesson progress and game stars for this student? This action cannot be undone.");
+        if (confirmed) {
+          const res = await window.MindVerseAPI.resetStudentProgress(activeStudentId);
+          if (res.success) {
+            alert("Progress has been reset.");
+            await loadStudentStatistics();
+          }
+        }
+      });
+
+      // New student modal controls
+      document.getElementById('openNewStudentModalBtn')?.addEventListener('click', () => {
+        document.getElementById('newStudentModal').classList.remove('hidden');
+      });
+
+      document.getElementById('cancelNewStudentBtn')?.addEventListener('click', () => {
+        document.getElementById('newStudentModal').classList.add('hidden');
+      });
+
+      document.getElementById('confirmCreateStudentBtn')?.addEventListener('click', async () => {
+        const nameInput = document.getElementById('newStudentNameInput');
+        const levelSelect = document.getElementById('newStudentLevelSelect');
+        const name = nameInput.value.trim();
+        if (!name) {
+          alert("Please enter a student name.");
+          return;
+        }
+
+        const res = await window.MindVerseAPI.createStudent({
+          name: name,
+          learning_level: parseInt(levelSelect.value, 10),
+          preferred_theme: 'default'
+        });
+
+        if (res.success) {
+          nameInput.value = '';
+          document.getElementById('newStudentModal').classList.add('hidden');
+          await loadStudentProfiles();
+          activeStudentId = res.student.id;
+          document.getElementById('caregiverStudentSelect').value = activeStudentId;
+          await loadStudentStatistics();
+        }
+      });
+    });
+
+    async function loadStudentProfiles() {
+      studentsList = await window.MindVerseAPI.getStudents();
+      const select = document.getElementById('caregiverStudentSelect');
+      if (!select) return;
+
+      select.innerHTML = studentsList.map(s => `
+        <option value="${s.id}">
+          ${s.name} (Level ${s.learning_level})
+        </option>
+      `).join('');
+
+      if (studentsList.length > 0) {
+        activeStudentId = studentsList[0].id;
+      }
+    }
+
+    async function loadStudentStatistics() {
+      const stats = await window.MindVerseAPI.getCaregiverStats(activeStudentId);
+      if (!stats) return;
+
+      // Populate cards
+      document.getElementById('statCaregiverStars').textContent = stats.total_stars;
+      document.getElementById('statCaregiverLessons').textContent = `${stats.curriculum.completed_lessons} / ${stats.curriculum.total_lessons}`;
+      document.getElementById('statCaregiverCompletionRate').textContent = `${stats.curriculum.completion_percentage}% Curriculum Complete`;
+      document.getElementById('statCaregiverHintsAttempts').textContent = `${stats.curriculum.total_hints_used} hints / ${stats.curriculum.total_attempts} attempts`;
+      document.getElementById('statCaregiverGameAccuracy').textContent = `${stats.games.avg_accuracy}%`;
+      document.getElementById('statCaregiverGamesPlayed').textContent = `${stats.games.played_count} games completed (${stats.games.stars} stars)`;
+
+      // Populate config fields
+      if (stats.student) {
+        document.getElementById('cfgLevelSelect').value = stats.student.learning_level;
+        document.getElementById('cfgThemeSelect').value = stats.student.preferred_theme;
+        document.getElementById('cfgFontSizeSelect').value = stats.student.font_size;
+      }
+
+      // Populate Activity Timeline
+      const timeline = document.getElementById('caregiverActivityTimeline');
+      if (stats.recent_activities && stats.recent_activities.length > 0) {
+        timeline.innerHTML = stats.recent_activities.map(act => `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border-light);">
+            <div>
+              <strong style="color: var(--color-primary);">${formatActivityType(act.activity_type)}</strong>
+              <span style="font-size: 0.9rem; color: var(--text-muted); margin-left: 8px;">
+                ${JSON.stringify(act.details).replace(/[{}"]/g, ' ')}
+              </span>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">${new Date(act.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+        `).join('');
+      } else {
+        timeline.innerHTML = '<p style="color: var(--text-muted); padding: 12px 0;">No activities recorded yet for this student.</p>';
+      }
+    }
+
+    function formatActivityType(type) {
+      switch (type) {
+        case 'lesson_progress': return '📚 Completed Lesson Step';
+        case 'game_completed': return '🎮 Mini-Game Played';
+        case 'computer_skill_completed': return '🖱️ Motor Skill Practice';
+        case 'progress_reset': return '⚠️ Progress Reset';
+        default: return '🌟 Learning Activity';
+      }
+    }
+  </script>
+</body>
+</html>

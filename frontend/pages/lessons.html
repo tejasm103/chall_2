@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progressive Curriculum — MindVerse</title>
+  <meta name="description" content="Explore six structured learning levels designed for predictable progression, errorless learning, and joyful skill-building.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
+  
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <style>
+    .level-tabs-bar {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .level-tab-btn {
+      white-space: nowrap;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-light);
+      background: var(--bg-card);
+      cursor: pointer;
+      min-height: 44px;
+      transition: all 0.2s ease;
+    }
+
+    .level-tab-btn.active {
+      background: var(--color-primary);
+      color: #FFFFFF;
+      border-color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+  <canvas id="bgCanvas"></canvas>
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility Toolbar"></aside>
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="../assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="../index.html" class="nav-link">🏠 Home</a>
+        <a href="dashboard.html" class="nav-link">🌟 Dashboard</a>
+        <a href="alphabet.html" class="nav-link">🔤 Alphabet</a>
+        <a href="lessons.html" class="nav-link active">📚 Lessons</a>
+        <a href="games.html" class="nav-link">🎮 Games</a>
+        <a href="videos.html" class="nav-link">🎬 Videos</a>
+        <a href="daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="caregiver.html" class="nav-link">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content" role="main">
+    <div class="page-header">
+      <h1 class="page-title">Structured Curriculum</h1>
+      <p class="page-subtitle">Six gentle levels designed with errorless learning support, clear visual models, and predictable pacing.</p>
+    </div>
+
+    <!-- Level Filter Tabs -->
+    <div class="level-tabs-bar" role="tablist" aria-label="Curriculum Levels">
+      <button class="level-tab-btn active" data-level="all" role="tab" aria-selected="true">All Levels</button>
+      <button class="level-tab-btn" data-level="1" role="tab" aria-selected="false">Level 1: Discovering the World</button>
+      <button class="level-tab-btn" data-level="2" role="tab" aria-selected="false">Level 2: Phonics & Counting</button>
+      <button class="level-tab-btn" data-level="3" role="tab" aria-selected="false">Level 3: Early Academics & Emotions</button>
+      <button class="level-tab-btn" data-level="4" role="tab" aria-selected="false">Level 4: Problem Solving</button>
+      <button class="level-tab-btn" data-level="5" role="tab" aria-selected="false">Level 5: Logic & Patterns</button>
+      <button class="level-tab-btn" data-level="6" role="tab" aria-selected="false">Level 6: Everyday Independence</button>
+    </div>
+
+    <!-- Lessons List Grid -->
+    <div id="lessonsGrid" class="games-grid" role="region" aria-label="Available Lessons">
+      <!-- Injected via JavaScript -->
+    </div>
+  </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>MindVerse Curriculum &copy; 2026. Self-paced, non-punitive, accessible learning for all.</div>
+      <a href="dashboard.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🌟 Return to Dashboard</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/sound-engine.js"></script>
+  <script src="../js/three-fallback.js"></script>
+  <script src="../js/three-world.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let currentFilterLevel = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadLessons();
+
+      // Tab click handling
+      document.querySelectorAll('.level-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.level-tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          currentFilterLevel = btn.getAttribute('data-level');
+          if (window.SoundEngine) window.SoundEngine.playClick();
+          loadLessons();
+        });
+      });
+    });
+
+    async function loadLessons() {
+      const grid = document.getElementById('lessonsGrid');
+      if (!grid) return;
+
+      const levelParam = currentFilterLevel === 'all' ? null : parseInt(currentFilterLevel, 10);
+      const lessons = await window.MindVerseAPI.getLessons(levelParam);
+
+      if (!lessons || lessons.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 32px;">No lessons found for this level.</p>';
+        return;
+      }
+
+      grid.innerHTML = lessons.map(l => `
+        <article class="card game-card">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span class="badge badge-${l.difficulty}">${l.difficulty}</span>
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--color-primary);">Level ${l.level}</span>
+            </div>
+            <h2 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 6px;">${l.title}</h2>
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-secondary); margin-bottom: 8px;">${l.subject} • ${l.concept || ''}</div>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">${l.description}</p>
+          </div>
+          <div style="margin-top: 20px;">
+            <a href="lesson-detail.html?slug=${encodeURIComponent(l.slug)}" class="btn btn-primary" style="width: 100%;">
+              ▶️ Start Lesson
+            </a>
+          </div>
+        </article>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

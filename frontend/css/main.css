@@ -1,0 +1,385 @@
+/* MindVerse — Inclusive Learning Lab: Main Stylesheet */
+:root {
+  /* Color Palette — Soft, calm, predictable, non-overstimulating */
+  --color-primary: #3A86C8;
+  --color-primary-hover: #2B6CB0;
+  --color-secondary: #2A9D8F;
+  --color-secondary-hover: #21867A;
+  --color-accent: #FFD166;
+  --color-accent-warm: #F4A261;
+  
+  --bg-page: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-surface: #F1F5F9;
+  --bg-surface-hover: #E2E8F0;
+  
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --text-inverse: #FFFFFF;
+  
+  --border-light: #E2E8F0;
+  --border-focus: #3A86C8;
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Typography Defaults */
+  --font-base: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --font-size-root: 16px;
+  --line-height-base: 1.6;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--font-size-root);
+  font-family: var(--font-base);
+  color: var(--text-main);
+  background-color: var(--bg-page);
+  line-height: var(--line-height-base);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Skip to Main Content Link for Screen Readers & Keyboard Navigation */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 16px;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  padding: 12px 20px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  z-index: 10000;
+  text-decoration: none;
+  transition: top 0.2s ease;
+  box-shadow: var(--shadow-lg);
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: 4px solid var(--color-accent);
+}
+
+/* Background Canvas Layer (3D or 2D Fallback) */
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* App Header & Navigation Bar */
+.app-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+}
+
+.brand-link:focus-visible {
+  outline: 3px solid var(--border-focus);
+}
+
+.brand-logo-img {
+  height: 44px;
+  width: auto;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  min-height: 48px;
+}
+
+.nav-link:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--color-primary);
+}
+
+.nav-link.active {
+  background-color: #EBF5FF;
+  color: var(--color-primary);
+  border: 1px solid #BFDBFE;
+}
+
+.nav-link:focus-visible {
+  outline: 3px solid var(--border-focus);
+}
+
+/* Accessible Persistent Toolbar Container */
+.toolbar-container {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+  padding: 8px 24px;
+}
+
+.toolbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toolbar-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1.5px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 40px;
+  min-width: 40px;
+  transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--color-primary);
+}
+
+.toolbar-btn.active {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.toolbar-btn:focus-visible {
+  outline: 3px solid var(--border-focus);
+}
+
+/* Main Content Wrapper */
+.main-content {
+  flex: 1;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* Section Header & Subtitle */
+.page-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.page-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Standard Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 8px rgba(58, 134, 200, 0.25);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+  box-shadow: 0 4px 8px rgba(42, 157, 143, 0.25);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 2px solid var(--border-light);
+}
+
+.btn-outline:hover {
+  background-color: var(--bg-surface);
+  border-color: var(--color-primary);
+}
+
+.btn:focus-visible {
+  outline: 4px solid var(--border-focus);
+}
+
+/* Card Primitives */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border-light);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: #CBD5E1;
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-gentle { background: #EBF5FF; color: #1E88E5; }
+.badge-moderate { background: #E6F4EA; color: #2E7D32; }
+.badge-structured { background: #FFF8E1; color: #F57F17; }
+.badge-empowering { background: #F3E8FF; color: #7E22CE; }
+
+/* Accessible Status Announcer (aria-live) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Footer */
+.app-footer {
+  margin-top: auto;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-light);
+  padding: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}

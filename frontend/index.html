@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindVerse — Inclusive Learning Lab</title>
+  <meta name="description" content="Calm, predictable, and accessible educational learning lab designed for neurodivergent children, including ASD, ADHD, Down syndrome, and dyslexia.">
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/mindverse-logo.svg">
+  
+  <!-- CSS Design System -->
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/accessibility.css">
+  <link rel="stylesheet" href="./css/animations.css">
+  <link rel="stylesheet" href="./css/responsive.css">
+</head>
+<body>
+  <!-- Accessibility Skip Link -->
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+
+  <!-- Calming Background Canvas (Three.js with 2D Fallback) -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Persistent Accessibility & Sensory Controls Toolbar -->
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility and Sensory Preferences"></aside>
+
+  <!-- Speech Captions Overlay -->
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+
+  <!-- Screen Reader Live Status Announcer -->
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <!-- Main Header & Navigation -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="./index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="./assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="./index.html" class="nav-link active">🏠 Home</a>
+        <a href="./pages/dashboard.html" class="nav-link">🌟 Dashboard</a>
+        <a href="./pages/alphabet.html" class="nav-link">🔤 Alphabet</a>
+        <a href="./pages/lessons.html" class="nav-link">📚 Lessons</a>
+        <a href="./pages/games.html" class="nav-link">🎮 Games</a>
+        <a href="./pages/videos.html" class="nav-link">🎬 Videos</a>
+        <a href="./pages/daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="./pages/computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="./pages/caregiver.html" class="nav-link">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Page Content -->
+  <main id="mainContent" class="main-content" role="main">
+    <!-- Hero Banner with Milo Demonstration -->
+    <section class="card fade-in" style="margin-bottom: 36px; padding: 40px 32px; background: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(235,248,255,0.92) 100%);">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px;">
+          <div class="badge badge-gentle" style="margin-bottom: 12px;">🌟 Gentle & Predictable Learning</div>
+          <h1 style="font-size: 2.6rem; font-weight: 800; color: var(--text-main); line-height: 1.2; margin-bottom: 16px;">
+            Welcome to <span style="color: var(--color-primary);">MindVerse</span>
+          </h1>
+          <p style="font-size: 1.2rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+            An accessible educational space designed for neurodivergent learners. Learn at your own comfortable pace with demonstration pictures, friendly audio, step-by-step guidance, and Milo your digital robot companion.
+          </p>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <a href="./pages/dashboard.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 14px 28px;">
+              🚀 Start Learning Journey
+            </a>
+            <a href="./pages/alphabet.html" class="btn btn-outline" style="font-size: 1.1rem; padding: 14px 28px;">
+              🔤 Explore A–Z Wall
+            </a>
+          </div>
+        </div>
+
+        <div style="flex: 0 0 240px; text-align: center; background: var(--bg-card); padding: 24px; border-radius: var(--radius-lg); border: 2px solid var(--border-light); box-shadow: var(--shadow-sm);">
+          <img src="./assets/images/milo-robot.svg" alt="Milo the Robot Companion" style="width: 120px; height: 150px; margin-bottom: 12px;" />
+          <h2 style="font-size: 1.25rem; font-weight: 700;">Hi, I'm Milo!</h2>
+          <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 4px;">I'm here to guide you with gentle tips and encouraging words.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Features Grid -->
+    <section aria-labelledby="modulesTitle">
+      <div class="page-header">
+        <h2 id="modulesTitle" class="page-title">Inclusive Learning Modules</h2>
+        <p class="page-subtitle">Choose a supportive activity tailored to your interests and learning goals.</p>
+      </div>
+
+      <div class="games-grid">
+        <!-- Alphabet Wall -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">🔤</div>
+            <div class="badge badge-gentle" style="margin-bottom: 8px;">Foundations</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 8px;">Alphabet & Phonics Wall</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Complete A to Z tactile cards with original picture illustrations, sound cues, and recognition practice.
+            </p>
+          </div>
+          <a href="./pages/alphabet.html" class="btn btn-primary" style="margin-top: 20px;">Open Alphabet Wall</a>
+        </article>
+
+        <!-- Progressive Curriculum -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">📚</div>
+            <div class="badge badge-moderate" style="margin-bottom: 8px;">6 Levels</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 8px;">Structured Curriculum</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Step-by-step lessons covering colors, shapes, phonics, numbers, emotions, sequencing, and independence.
+            </p>
+          </div>
+          <a href="./pages/lessons.html" class="btn btn-secondary" style="margin-top: 20px;">View Lessons</a>
+        </article>
+
+        <!-- Educational Games -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">🎮</div>
+            <div class="badge badge-structured" style="margin-bottom: 8px;">Interactive Play</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 8px;">Educational Mini-Games</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Color Matcher, Emotion Recognizer, Object Counter, and Picture Pairing with encouraging 3-star scoring.
+            </p>
+          </div>
+          <a href="./pages/games.html" class="btn btn-primary" style="margin-top: 20px;">Play Games</a>
+        </article>
+
+        <!-- Motor & Computer Skills -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">🖱️</div>
+            <div class="badge badge-empowering" style="margin-bottom: 8px;">Motor Skills</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 8px;">Computer & Mouse Skills</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Forgiving path steering, bubble popping, target clicking, and shape sorting with keyboard/touch alternatives.
+            </p>
+          </div>
+          <a href="./pages/computer-skills.html" class="btn btn-secondary" style="margin-top: 20px;">Practice Skills</a>
+        </article>
+
+        <!-- Visual Daily Routine -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">📅</div>
+            <div class="badge badge-gentle" style="margin-bottom: 8px;">Independence</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 8px;">Visual Daily Routine</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Pictorial schedules for Morning, Hygiene, School, and Bedtime with checkboxes and customizable tasks.
+            </p>
+          </div>
+          <a href="./pages/daily-routine.html" class="btn btn-primary" style="margin-top: 20px;">View Routine</a>
+        </article>
+
+        <!-- Accessible Videos -->
+        <article class="card game-card">
+          <div>
+            <div class="game-card-icon">🎬</div>
+            <div class="badge badge-moderate" style="margin-bottom: 8px;">Multimedia</div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 8px;">Accessible Video Library</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">
+              Demonstration videos with WebVTT captions, interactive sync transcripts, speed controls, and warm filters.
+            </p>
+          </div>
+          <a href="./pages/videos.html" class="btn btn-secondary" style="margin-top: 20px;">Watch Videos</a>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- App Footer -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <strong>MindVerse — Inclusive Learning Lab</strong> &copy; 2026. Built with calm, accessible, universal web design.
+      </div>
+      <div>
+        <a href="./pages/caregiver.html" style="color: var(--color-primary); text-decoration: none; font-weight: 600;">
+          🛡️ Caregiver & Teacher Portal
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./js/api.js"></script>
+  <script src="./js/sound-engine.js"></script>
+  <script src="./js/three-fallback.js"></script>
+  <script src="./js/three-world.js"></script>
+  <script src="./js/character.js"></script>
+  <script src="./js/accessibility.js"></script>
+  <script src="./js/main.js"></script>
+</body>
+</html>

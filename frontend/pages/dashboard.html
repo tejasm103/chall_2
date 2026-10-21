@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default" data-font-size="standard">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learner Dashboard — MindVerse</title>
+  <meta name="description" content="Personalized learner dashboard with progress indicators, star badges, level switcher, and recommended activities.">
+  <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
+  
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Skip to main learning content</a>
+  <canvas id="bgCanvas"></canvas>
+  <aside id="accessibilityToolbar" class="toolbar-container" aria-label="Accessibility Toolbar"></aside>
+  <div id="speechCaptionOverlay" class="speech-captions-overlay" aria-live="polite"></div>
+  <div id="ariaLiveRegion" class="sr-only" aria-live="polite"></div>
+
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="brand-link" aria-label="MindVerse Home">
+        <img src="../assets/icons/mindverse-logo.svg" alt="MindVerse Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
+        <a href="../index.html" class="nav-link">🏠 Home</a>
+        <a href="dashboard.html" class="nav-link active">🌟 Dashboard</a>
+        <a href="alphabet.html" class="nav-link">🔤 Alphabet</a>
+        <a href="lessons.html" class="nav-link">📚 Lessons</a>
+        <a href="games.html" class="nav-link">🎮 Games</a>
+        <a href="videos.html" class="nav-link">🎬 Videos</a>
+        <a href="daily-routine.html" class="nav-link">📅 Routines</a>
+        <a href="computer-skills.html" class="nav-link">🖱️ Skills</a>
+        <a href="caregiver.html" class="nav-link">🛡️ Caregiver</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-content" role="main">
+    <div class="page-header" style="text-align: left; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h1 class="page-title" id="studentGreeting">Welcome, Explorer!</h1>
+        <p class="page-subtitle" id="studentSubtext">Choose your path today. Take your time and enjoy learning.</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; background: var(--bg-card); padding: 8px 16px; border-radius: var(--radius-md); border: 1.5px solid var(--border-light);">
+        <label for="learnerLevelSelect" style="font-weight: 700; font-size: 0.9rem; color: var(--text-muted);">Current Level:</label>
+        <select id="learnerLevelSelect" style="padding: 6px 12px; font-weight: 700; border-radius: var(--radius-sm); border: 1px solid var(--border-light); font-size: 0.95rem; background: var(--bg-surface); cursor: pointer;" aria-label="Select learning curriculum level">
+          <option value="1">Level 1 — Discovering the World</option>
+          <option value="2">Level 2 — Foundational Phonics & Counting</option>
+          <option value="3">Level 3 — Early Academics & Emotions</option>
+          <option value="4">Level 4 — Primary Skills & Problem Solving</option>
+          <option value="5">Level 5 — Middle Skills & Logic</option>
+          <option value="6">Level 6 — Everyday Independence</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Learner Milestones Stats Summary -->
+    <section aria-labelledby="milestonesTitle" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
+      <h2 id="milestonesTitle" class="sr-only">Learning Milestones</h2>
+      
+      <div class="card" style="display: flex; align-items: center; gap: 16px; padding: 20px;">
+        <div style="font-size: 2.5rem; background: #FEF3C7; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">⭐</div>
+        <div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: #D97706;" id="statTotalStars">6</div>
+          <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Learning Stars</div>
+        </div>
+      </div>
+
+      <div class="card" style="display: flex; align-items: center; gap: 16px; padding: 20px;">
+        <div style="font-size: 2.5rem; background: #E0F2FE; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">🏆</div>
+        <div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: #0284C7;" id="statLessonsDone">2</div>
+          <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Completed Lessons</div>
+        </div>
+      </div>
+
+      <div class="card" style="display: flex; align-items: center; gap: 16px; padding: 20px;">
+        <div style="font-size: 2.5rem; background: #DCFCE7; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">🎮</div>
+        <div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: #16A34A;" id="statGamesPlayed">3</div>
+          <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Games Played</div>
+        </div>
+      </div>
+
+      <div class="card" style="display: flex; align-items: center; gap: 16px; padding: 20px;">
+        <div style="font-size: 2.5rem; background: #F3E8FF; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">📅</div>
+        <div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: #9333EA;" id="statRoutinePercent">60%</div>
+          <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Daily Tasks Complete</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Continue Learning Recommendation Card -->
+    <section class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,253,250,0.95) 100%); border-left: 8px solid var(--color-secondary); margin-bottom: 32px; padding: 32px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+        <div>
+          <span class="badge badge-gentle" style="margin-bottom: 8px;">Recommended Next Step</span>
+          <h2 style="font-size: 1.7rem; font-weight: 800; margin-bottom: 8px;" id="recLessonTitle">Wonderful Colors</h2>
+          <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 600px;" id="recLessonDesc">
+            Explore bright primary colors with gentle visual guides and Milo.
+          </p>
+        </div>
+        <a id="recLessonLink" href="lesson-detail.html?slug=wonderful-colors" class="btn btn-secondary" style="font-size: 1.1rem; padding: 14px 28px;">
+          ▶️ Continue Lesson
+        </a>
+      </div>
+    </section>
+
+    <!-- Quick Activity Hub -->
+    <section>
+      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 20px;">Quick Jump to Activities</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+        <div class="card" style="text-align: center; padding: 24px;">
+          <div style="font-size: 3rem; margin-bottom: 12px;">🔤</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;">Alphabet Wall</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Practice letters A to Z with sound cues and illustrations.</p>
+          <a href="alphabet.html" class="btn btn-outline" style="width: 100%;">Open Phonics Wall</a>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 24px;">
+          <div style="font-size: 3rem; margin-bottom: 12px;">🎨</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;">Color Matcher</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Fun tactile color recognition with friendly patterns.</p>
+          <a href="games.html" class="btn btn-outline" style="width: 100%;">Play Mini-Game</a>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 24px;">
+          <div style="font-size: 3rem; margin-bottom: 12px;">🧼</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;">Daily Routine</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Check off your morning tasks and hygiene routine.</p>
+          <a href="daily-routine.html" class="btn btn-outline" style="width: 100%;">Check Schedule</a>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 24px;">
+          <div style="font-size: 3rem; margin-bottom: 12px;">🖱️</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;">Bubble Pop</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Practice gentle hovering and popping musical bubbles.</p>
+          <a href="computer-skills.html" class="btn btn-outline" style="width: 100%;">Practice Skills</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>MindVerse Dashboard &copy; 2026. Designed for inclusion and joyful progress.</div>
+      <a href="caregiver.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🛡️ Caregiver Portal</a>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/sound-engine.js"></script>
+  <script src="../js/three-fallback.js"></script>
+  <script src="../js/three-world.js"></script>
+  <script src="../js/character.js"></script>
+  <script src="../js/accessibility.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const studentId = window.AccessibilityManager ? window.AccessibilityManager.getStudentId() : 1;
+
+      // Load student data and stats
+      try {
+        const student = await window.MindVerseAPI.getStudent(studentId);
+        if (student) {
+          document.getElementById('studentGreeting').textContent = `Welcome back, ${student.name}!`;
+          document.getElementById('studentSubtext').textContent = `Learning Level ${student.learning_level} Explorer — You are doing great!`;
+          const lvlSelect = document.getElementById('learnerLevelSelect');
+          if (lvlSelect) lvlSelect.value = student.learning_level;
+        }
+
+        const stats = await window.MindVerseAPI.getCaregiverStats(studentId);
+        if (stats) {
+          document.getElementById('statTotalStars').textContent = stats.total_stars;
+          document.getElementById('statLessonsDone').textContent = stats.curriculum.completed_lessons;
+          document.getElementById('statGamesPlayed').textContent = stats.games.played_count;
+          document.getElementById('statRoutinePercent').textContent = `${stats.routines.completion_rate}%`;
+        }
+
+        // Level change handler
+        document.getElementById('learnerLevelSelect')?.addEventListener('change', async (e) => {
+          const newLevel = parseInt(e.target.value, 10);
+          await window.MindVerseAPI.updateStudent(studentId, { learning_level: newLevel });
+          if (window.MiloCompanion) window.MiloCompanion.celebrate(`Switching to Level ${newLevel}! Ready to explore new ideas.`);
+        });
+
+      } catch (err) {
+        console.warn('Dashboard fetch notice:', err);
+      }
+    });
+  </script>
+</body>
+</html>

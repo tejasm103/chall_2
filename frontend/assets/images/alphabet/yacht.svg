@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Hull -->
+  <polygon points="15,68 85,68 75,82 25,82" fill="#0288D1" />
+  <!-- Mast -->
+  <line x1="48" y1="20" x2="48" y2="68" stroke="#5D4037" stroke-width="3" />
+  <!-- Big Sail -->
+  <polygon points="46,24 18,64 46,64" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="1.5" />
+  <!-- Small Sail -->
+  <polygon points="50,28 78,64 50,64" fill="#FF7043" />
+  <!-- Waves -->
+  <path d="M 8 84 Q 25 80 45 84 Q 65 88 85 84" stroke="#4FC3F7" stroke-width="3" stroke-linecap="round" fill="none" />
+</svg>
