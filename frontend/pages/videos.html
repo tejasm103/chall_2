@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accessible Video Library — MindVerse</title>
-  <meta name="description" content="Calm educational videos with WebVTT captions, interactive sync transcripts, playback speed controls, and sensory visual filters.">
+  <meta name="description" content="Calm educational videos with WebVTT captions, spoken voice narration, interactive sync transcripts, playback speed controls, and sensory visual filters.">
   <link rel="icon" type="image/svg+xml" href="../assets/icons/mindverse-logo.svg">
   
   <link rel="stylesheet" href="../css/main.css">
@@ -42,7 +42,7 @@
   <main id="mainContent" class="main-content" role="main">
     <div class="page-header">
       <h1 class="page-title">Accessible Video Library</h1>
-      <p class="page-subtitle">Educational demonstrations with interactive transcripts, closed captions, and sensory contrast filters.</p>
+      <p class="page-subtitle">Educational demonstrations with spoken voice narration, interactive transcripts, closed captions, and sensory contrast filters.</p>
     </div>
 
     <!-- Video Library Grid -->
@@ -75,6 +75,10 @@
         <div class="video-controls-left">
           <button id="modalPlayPauseBtn" class="v-ctrl-btn" aria-label="Play or Pause Video">▶ Play</button>
           <button id="modalRestartBtn" class="v-ctrl-btn" aria-label="Restart Video from Beginning">🔄 Restart</button>
+          <button id="modalVoiceToggleBtn" class="v-ctrl-btn active" aria-label="Toggle Voice Narration">🔊 Voice: ON</button>
+          <span id="videoVoiceIndicator" class="voice-wave-indicator" title="Voice Speaking" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
           <span id="videoCurrentTimeDisplay" style="font-weight: 700; font-size: 0.9rem; margin-left: 8px;">0:00 / 2:15</span>
         </div>
 
@@ -99,7 +103,10 @@
 
       <!-- Interactive Transcript Box -->
       <div class="interactive-transcript-container" aria-label="Synchronized Transcript">
-        <div class="transcript-header">Interactive Transcript (Click any line to seek)</div>
+        <div class="transcript-header" style="display: flex; align-items: center; justify-content: space-between;">
+          <span>Interactive Transcript (Click any line to seek and hear voice)</span>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary);">🔊 Voice Synchronized</span>
+        </div>
         <div id="transcriptLinesContainer">
           <!-- Injected lines -->
         </div>
@@ -109,11 +116,12 @@
 
   <footer class="app-footer" role="contentinfo">
     <div class="footer-inner">
-      <div>MindVerse Video Library &copy; 2026. Local visual demonstrations with synchronized transcripts.</div>
+      <div>MindVerse Video Library &copy; 2026. Local visual demonstrations with synchronized transcripts and voice narration.</div>
       <a href="dashboard.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">🌟 Return to Dashboard</a>
     </div>
   </footer>
 
+  <script src="../js/three.min.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/sound-engine.js"></script>
   <script src="../js/three-fallback.js"></script>
@@ -145,7 +153,7 @@
         { time: 70, text: "Five bright stars shining in the quiet sky." }
       ],
       4: [
-        { time: 0, text: "Recognizing Feelings & Facial Expressions with Friends." },
+        { time: 0, text: "Recognizing Feelings and Facial Expressions with Friends." },
         { time: 25, text: "Notice a happy smile with upturned corners." },
         { time: 50, text: "A calm face is resting and peaceful." },
         { time: 75, text: "Every person shows their feelings in their own special way." }
@@ -165,10 +173,74 @@
     let playbackSpeed = 1.0;
     let tickerId = null;
 
+    // Voice Narration Engine
+    let voiceNarrationEnabled = true;
+    let lastSpokenIndex = -1;
+    let cachedVoices = [];
+
     document.addEventListener('DOMContentLoaded', async () => {
+      initSpeechVoices();
       await loadVideos();
       bindPlayerControls();
     });
+
+    function initSpeechVoices() {
+      if ('speechSynthesis' in window) {
+        cachedVoices = window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+          cachedVoices = window.speechSynthesis.getVoices();
+        };
+      }
+    }
+
+    function speakNarration(text) {
+      if (!voiceNarrationEnabled) return;
+      if (!('speechSynthesis' in window)) {
+        console.warn('[VideoVoice] Web Speech API not supported in browser.');
+        return;
+      }
+
+      try {
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.88 * playbackSpeed;
+        utterance.pitch = 1.05;
+
+        const voices = cachedVoices.length ? cachedVoices : window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const preferredVoice = voices.find(v => v.lang.startsWith('en') && (
+            v.name.includes('Natural') ||
+            v.name.includes('Google') ||
+            v.name.includes('Samantha') ||
+            v.name.includes('Jenny') ||
+            v.name.includes('Zira') ||
+            v.name.includes('David') ||
+            v.name.includes('Victoria')
+          )) || voices.find(v => v.lang.startsWith('en')) || voices[0];
+          if (preferredVoice) utterance.voice = preferredVoice;
+        }
+
+        utterance.onstart = () => {
+          document.getElementById('videoVoiceIndicator')?.classList.add('speaking');
+          if (window.MiloCompanion) window.MiloCompanion.setState('speaking');
+        };
+
+        utterance.onend = () => {
+          document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
+          if (window.MiloCompanion) window.MiloCompanion.setState('idle');
+        };
+
+        utterance.onerror = () => {
+          document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
+          if (window.MiloCompanion) window.MiloCompanion.setState('idle');
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('[VideoVoice] Speech synthesis error:', err);
+      }
+    }
 
     async function loadVideos() {
       const grid = document.getElementById('videoLibraryGrid');
@@ -218,14 +290,26 @@
       modal.classList.remove('hidden');
 
       currentTime = 0;
+      lastSpokenIndex = -1;
       isPlaying = true;
       document.getElementById('modalPlayPauseBtn').textContent = '⏸ Pause';
+
+      // Unlock browser audio & speech context on user click
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.resume();
+      }
+      if (window.SoundEngine) {
+        window.SoundEngine.init();
+      }
 
       renderTranscript(videoId);
       startDemoAnimation();
 
-      if (window.MiloCompanion) {
-        window.MiloCompanion.speak(`Now playing: ${activeVideo.title}`);
+      // Immediately speak the introductory narration line
+      const lines = SAMPLE_TRANSCRIPTS[videoId] || SAMPLE_TRANSCRIPTS[1];
+      if (lines && lines.length > 0) {
+        lastSpokenIndex = 0;
+        speakNarration(lines[0].text);
       }
     }
 
@@ -234,37 +318,108 @@
       const lines = SAMPLE_TRANSCRIPTS[videoId] || SAMPLE_TRANSCRIPTS[1];
 
       container.innerHTML = lines.map((l, i) => `
-        <div class="transcript-line ${i === 0 ? 'current' : ''}" data-time="${l.time}">
-          <strong style="color: var(--color-primary); margin-right: 8px;">[${formatTime(l.time)}]</strong>
-          <span>${l.text}</span>
+        <div class="transcript-line ${i === 0 ? 'current' : ''}" data-time="${l.time}" data-index="${i}" role="button" tabindex="0" aria-label="Jump to ${l.text}">
+          <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+            <strong style="color: var(--color-primary); flex-shrink: 0;">[${formatTime(l.time)}]</strong>
+            <span>${l.text}</span>
+          </div>
+          <button class="line-hear-btn" data-time="${l.time}" data-index="${i}" title="Hear line aloud" aria-label="Hear aloud">
+            🔊 Listen
+          </button>
         </div>
       `).join('');
 
+      // Click on transcript row to seek and speak
       container.querySelectorAll('.transcript-line').forEach(el => {
         el.addEventListener('click', () => {
-          currentTime = parseInt(el.getAttribute('data-time'), 10);
+          const t = parseInt(el.getAttribute('data-time'), 10);
+          const idx = parseInt(el.getAttribute('data-index'), 10);
+          currentTime = t;
+          lastSpokenIndex = idx;
           updateCaptionsAndTranscript();
+          speakNarration(lines[idx].text);
+        });
+      });
+
+      // Dedicated Listen Button
+      container.querySelectorAll('.line-hear-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const t = parseInt(btn.getAttribute('data-time'), 10);
+          const idx = parseInt(btn.getAttribute('data-index'), 10);
+          currentTime = t;
+          lastSpokenIndex = idx;
+          updateCaptionsAndTranscript();
+          speakNarration(lines[idx].text);
         });
       });
     }
 
     function bindPlayerControls() {
+      // Close modal
       document.getElementById('closeVideoModalBtn')?.addEventListener('click', () => {
         document.getElementById('videoPlayerModal').classList.add('hidden');
         isPlaying = false;
         clearInterval(tickerId);
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
       });
 
+      // Play / Pause
       document.getElementById('modalPlayPauseBtn')?.addEventListener('click', () => {
         isPlaying = !isPlaying;
         document.getElementById('modalPlayPauseBtn').textContent = isPlaying ? '⏸ Pause' : '▶ Play';
+
+        if (isPlaying) {
+          if ('speechSynthesis' in window) window.speechSynthesis.resume();
+          // Speak current active line
+          const lines = SAMPLE_TRANSCRIPTS[activeVideo ? activeVideo.id : 1] || SAMPLE_TRANSCRIPTS[1];
+          let currentIdx = 0;
+          for (let i = 0; i < lines.length; i++) {
+            if (currentTime >= lines[i].time) currentIdx = i;
+          }
+          speakNarration(lines[currentIdx].text);
+        } else {
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+          document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
+        }
       });
 
+      // Restart
       document.getElementById('modalRestartBtn')?.addEventListener('click', () => {
         currentTime = 0;
+        lastSpokenIndex = 0;
         isPlaying = true;
         document.getElementById('modalPlayPauseBtn').textContent = '⏸ Pause';
         updateCaptionsAndTranscript();
+
+        const lines = SAMPLE_TRANSCRIPTS[activeVideo ? activeVideo.id : 1] || SAMPLE_TRANSCRIPTS[1];
+        if (lines && lines.length > 0) {
+          speakNarration(lines[0].text);
+        }
+      });
+
+      // Voice Narration Toggle
+      document.getElementById('modalVoiceToggleBtn')?.addEventListener('click', () => {
+        voiceNarrationEnabled = !voiceNarrationEnabled;
+        const btn = document.getElementById('modalVoiceToggleBtn');
+        if (voiceNarrationEnabled) {
+          btn.textContent = '🔊 Voice: ON';
+          btn.classList.add('active');
+          const lines = SAMPLE_TRANSCRIPTS[activeVideo ? activeVideo.id : 1] || SAMPLE_TRANSCRIPTS[1];
+          let currentIdx = 0;
+          for (let i = 0; i < lines.length; i++) {
+            if (currentTime >= lines[i].time) currentIdx = i;
+          }
+          speakNarration(lines[currentIdx].text);
+        } else {
+          btn.textContent = '🔇 Voice: OFF';
+          btn.classList.remove('active');
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+          document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
+        }
       });
 
       // Speed switcher
@@ -288,7 +443,7 @@
       });
     }
 
-    // Procedural Demonstration Visualizer for Canvas Video Playback
+    // Dynamic, Subject-Aware Procedural Demonstration Visualizer
     function startDemoAnimation() {
       clearInterval(tickerId);
       const canvas = document.getElementById('demoVideoCanvas');
@@ -304,61 +459,201 @@
           currentTime = totalDuration;
           isPlaying = false;
           document.getElementById('modalPlayPauseBtn').textContent = '▶ Play';
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+          document.getElementById('videoVoiceIndicator')?.classList.remove('speaking');
         }
 
         document.getElementById('videoCurrentTimeDisplay').textContent = `${formatTime(currentTime)} / ${formatTime(totalDuration)}`;
         updateCaptionsAndTranscript();
 
-        // Draw animated relaxing visual demo
-        ctx.fillStyle = '#0F172A';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Breathing circle expansion/contraction
-        const cycle = (currentTime % 10) / 10;
-        const radius = 50 + Math.sin(cycle * Math.PI * 2) * 35;
-
-        const grad = ctx.createRadialGradient(400, 225, 10, 400, 225, radius + 20);
-        grad.addColorStop(0, '#48CAE4');
-        grad.addColorStop(0.7, '#2A9D8F');
-        grad.addColorStop(1, 'rgba(42, 157, 143, 0)');
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(400, 225, radius + 20, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 24px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(activeVideo ? activeVideo.title : 'Educational Demonstration', 400, 340);
+        // Render Canvas Animation
+        renderVideoCanvas(ctx, canvas, activeVideo ? activeVideo.id : 1, currentTime);
 
       }, 1000);
     }
 
+    function renderVideoCanvas(ctx, canvas, videoId, time) {
+      // Background gradient
+      ctx.fillStyle = '#0B132B';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (videoId === 1) {
+        // Calming Deep Breaths: Expanding and contracting breathing flower
+        const cycle = (time % 8) / 8;
+        const radius = 60 + Math.sin(cycle * Math.PI * 2) * 45;
+        const isBreatheIn = Math.sin(cycle * Math.PI * 2) >= 0;
+
+        const grad = ctx.createRadialGradient(400, 210, 10, 400, 210, radius + 30);
+        grad.addColorStop(0, '#48CAE4');
+        grad.addColorStop(0.6, '#2A9D8F');
+        grad.addColorStop(1, 'rgba(42, 157, 143, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(400, 210, radius + 30, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Inner soft core
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(400, 210, 18, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#E0F2FE';
+        ctx.font = 'bold 22px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(isBreatheIn ? '🌸 Gentle Breath In...' : '🍃 Soft Exhale Out...', 400, 340);
+
+      } else if (videoId === 2) {
+        // Phonics Melody: Bouncing glowing letters A-Z
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+        const currentLetter = letters[Math.floor((time % 14) / 2)] || 'A';
+
+        ctx.fillStyle = '#3A86C8';
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(330, 120, 140, 160, 20) : ctx.rect(330, 120, 140, 160);
+        ctx.fill();
+
+        ctx.strokeStyle = '#FFD166';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 72px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(currentLetter, 400, 230);
+
+        ctx.fillStyle = '#FFD166';
+        ctx.font = 'bold 22px Segoe UI, sans-serif';
+        ctx.fillText(`Letter ${currentLetter} Phonics Sound`, 400, 335);
+
+      } else if (videoId === 3) {
+        // Counting Playful Stars 1 to 10
+        const starCount = Math.min(10, Math.floor(time / 8) + 1);
+        ctx.fillStyle = '#FFD166';
+        ctx.font = 'bold 28px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`⭐ ${starCount} Bright Stars Counted!`, 400, 340);
+
+        for (let i = 0; i < starCount; i++) {
+          const angle = (i / 10) * Math.PI * 1.5 - Math.PI * 0.75;
+          const sx = 400 + Math.cos(angle) * 160;
+          const sy = 200 + Math.sin(angle) * 90;
+          drawStar(ctx, sx, sy, 5, 20, 10, '#FFD166');
+        }
+
+      } else if (videoId === 4) {
+        // Recognizing Feelings: Friendly face transitions
+        const expressions = ['😊 Happy Smile', '😌 Calm & Peaceful', '😮 Surprised', '🤔 Thoughtful'];
+        const expr = expressions[Math.floor((time % 16) / 4)] || expressions[0];
+
+        ctx.fillStyle = '#2A9D8F';
+        ctx.beginPath();
+        ctx.arc(400, 200, 75, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyes
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(375, 185, 10, 0, Math.PI * 2);
+        ctx.arc(425, 185, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Smile
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(400, 205, 35, 0.1 * Math.PI, 0.9 * Math.PI);
+        ctx.stroke();
+
+        ctx.fillStyle = '#E0F2FE';
+        ctx.font = 'bold 22px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(expr, 400, 335);
+
+      } else {
+        // Step-by-Step Handwashing Song
+        ctx.fillStyle = '#38BDF8';
+        ctx.font = 'bold 24px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🧼 Scrub with Bubbly Soap: 20 Seconds!', 400, 335);
+
+        // Floating bubbles
+        for (let i = 0; i < 7; i++) {
+          const bx = 280 + (i * 40) + Math.sin((time + i) * 1.5) * 15;
+          const by = 240 - ((time * 25 + i * 40) % 180);
+          ctx.strokeStyle = '#E0F2FE';
+          ctx.lineWidth = 2.5;
+          ctx.fillStyle = 'rgba(224, 242, 254, 0.25)';
+          ctx.beginPath();
+          ctx.arc(bx, by, 14 + (i % 3) * 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius, color) {
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
     function updateCaptionsAndTranscript() {
       const lines = SAMPLE_TRANSCRIPTS[activeVideo ? activeVideo.id : 1] || SAMPLE_TRANSCRIPTS[1];
-      let currentLine = lines[0];
+      let currentLineIndex = 0;
 
-      for (const l of lines) {
-        if (currentTime >= l.time) {
-          currentLine = l;
+      for (let i = 0; i < lines.length; i++) {
+        if (currentTime >= lines[i].time) {
+          currentLineIndex = i;
         }
       }
 
+      const currentLine = lines[currentLineIndex];
+
+      // Update closed caption box
       const captionBox = document.getElementById('modalVttCaptionBox');
       if (captionBox) {
         captionBox.textContent = currentLine.text;
       }
 
-      document.querySelectorAll('.transcript-line').forEach(el => {
-        const t = parseInt(el.getAttribute('data-time'), 10);
-        if (t === currentLine.time) {
+      // Highlight current line in transcript
+      document.querySelectorAll('.transcript-line').forEach((el, idx) => {
+        if (idx === currentLineIndex) {
           el.classList.add('current');
           el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         } else {
           el.classList.remove('current');
         }
       });
+
+      // Speak narration when active line advances
+      if (isPlaying && currentLineIndex !== lastSpokenIndex) {
+        lastSpokenIndex = currentLineIndex;
+        if (window.SoundEngine) {
+          window.SoundEngine.playTone(523.25, 0.12, 'sine', 0, 0.08);
+        }
+        speakNarration(currentLine.text);
+      }
     }
 
     function formatTime(seconds) {

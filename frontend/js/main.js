@@ -26,10 +26,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 4. Highlight Active Navigation Link
   highlightActiveNav();
 
-  // 5. User Gesture Audio Unlocking
+  // 5. User Gesture Audio & Speech Synthesis Unlocking
   const unlockAudio = () => {
     if (window.SoundEngine) {
       window.SoundEngine.init();
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.resume();
     }
     window.removeEventListener('click', unlockAudio);
     window.removeEventListener('keydown', unlockAudio);

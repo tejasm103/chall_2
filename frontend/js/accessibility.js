@@ -99,6 +99,9 @@ const AccessibilityManager = (() => {
   function applyTheme(themeName) {
     activeTheme = themeName;
     document.documentElement.setAttribute('data-theme', themeName);
+    if (window.ThreeWorld && window.ThreeWorld.updateTheme) {
+      window.ThreeWorld.updateTheme(themeName);
+    }
     updateToolbarActiveStates();
   }
 
@@ -117,7 +120,9 @@ const AccessibilityManager = (() => {
   function applyReducedMotion(enabled) {
     isReducedMotion = !!enabled;
     document.documentElement.setAttribute('data-reduced-motion', isReducedMotion ? 'true' : 'false');
-    if (window.ThreeWorld) window.ThreeWorld.setPaused(isReducedMotion || is3DPaused);
+    if (window.ThreeWorld && window.ThreeWorld.setReducedMotion) {
+      window.ThreeWorld.setReducedMotion(isReducedMotion);
+    }
     updateToolbarActiveStates();
   }
 
